@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>Sanoh</groupId>
+  <artifactId>Delivery</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>Delivery Maven Webapp</name>
+  <url>http://www.sanoh.com</url>
+
+  <properties>
+    <java.version>1.8</java.version>
+    <tomcat.version>10.0.0-M8</tomcat.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <org.springframework.version>5.2.9.RELEASE</org.springframework.version>
+    <org.springframework.data.version>2.3.4.RELEASE</org.springframework.data.version>
+    <!-- Logging -->
+    <logback.version>1.2.3</logback.version>
+    <slf4j.version>1.7.30</slf4j.version>
+  </properties>
+
+    <dependencies>
+
+    <!-- Spring -->
+<!--      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>5.2.9.RELEASE</version>
+      </dependency>-->
+<!--      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+        <version>${org.springframework.version}</version>
+      </dependency>-->
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${org.springframework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${org.springframework.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-jpa</artifactId>
+        <version>${org.springframework.data.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>slf4j-api</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>slf4j-api</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>5.4.6</version>
+      </dependency>
+<!--      <dependency>
+        <groupId>org.springframework.data</groupId>
+        <artifactId>spring-data-commons</artifactId>
+        <version>${org.springframework.data.version}</version>
+      </dependency>-->
+
+<!--      Excel connection-->
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi</artifactId>
+        <version>4.1.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.poi</groupId>
+        <artifactId>poi-ooxml</artifactId>
+        <version>4.1.2</version>
+      </dependency>
+
+      <!-- Logging with SLF4J & LogBack -->
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+<!--        <scope>compile</scope>-->
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${logback.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+          </exclusion>
+        </exclusions>
+
+        <!--        <scope>runtime</scope>-->
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
+        <scope>runtime</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+
+      <dependency>
+        <groupId>javax.persistence</groupId>
+        <artifactId>persistence-api</artifactId>
+        <version>1.0.2</version>
+      </dependency>
+
+      <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-servlet-api</artifactId>
+        <version>${tomcat.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-jdbc</artifactId>
+        <version>${tomcat.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>jstl</artifactId>
+        <version>1.2</version>
+      </dependency>
+
+      <!-- Webjars (static dependencies distributed as JAR files) -->
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>webjars-locator</artifactId>
+        <version>0.40</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>jackson-databind</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>jackson-core</artifactId>
+            <groupId>com.fasterxml.jackson.core</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>slf4j-api</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>jquery</artifactId>
+        <version>3.5.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>bootstrap</artifactId>
+        <version>4.5.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.webjars.bower</groupId>
+        <artifactId>datetimepicker</artifactId>
+        <version>2.5.20</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>jquery</artifactId>
+            <groupId>org.webjars.bower</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!--Datatables-->
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>datatables</artifactId>
+        <version>1.10.21</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.webjars</groupId>
+        <artifactId>datatables-plugins</artifactId>
+        <version>1.10.21</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.firebirdsql.jdbc/jaybird-jdk18 -->
+      <dependency>
+        <groupId>org.firebirdsql.jdbc</groupId>
+        <artifactId>jaybird-jdk18</artifactId>
+        <version>3.0.9</version>
+<!--
+        <scope>test</scope>
+-->
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/postgresql/postgresql -->
+      <dependency>
+        <groupId>postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>9.1-901-1.jdbc4</version>
+      </dependency>
+
+
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.1</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <!--JSON-->
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>2.11.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>2.11.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>2.11.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-hibernate5</artifactId>
+        <version>2.11.3</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.datatype</groupId>
+        <artifactId>jackson-datatype-jsr310</artifactId>
+        <version>2.11.3</version>
+      </dependency>
+
+      <!-- https://mvnrepository.com/artifact/org.json/json -->
+<!--
+      <dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20201115</version>
+      </dependency>
+-->
+
+
+      <!--hibernate-->
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>5.4.22.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.transaction</groupId>
+        <artifactId>jta</artifactId>
+        <version>1.1</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>6.1.6.Final</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>classmate</artifactId>
+            <groupId>com.fasterxml</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+
+      <!--      <dependency>
+              <groupId>org.firebirdsql.jdbc</groupId>
+              <artifactId>jaybird</artifactId>
+              <version>4.0.1.java8</version>
+              &lt;!&ndash;<exclusions>
+                <exclusion>
+                  <groupId>log4j</groupId>
+                  <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                  <groupId>junit</groupId>
+                  <artifactId>junit</artifactId>
+                </exclusion>
+              </exclusions>&ndash;&gt;
+            </dependency>-->
+    </dependencies>
+
+  <build>
+    <finalName>Delivery</finalName>
+    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+      <plugins>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.1.0</version>
+        </plugin>
+        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M5</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>3.3.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.0.0-M1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+">
+
+<!--    <context:annotation-config/>-->
+<!--    <context:component-scan base-package="com.gmail.osbornroad"/>-->
+
+    <tx:annotation-driven />
+
+    <context:component-scan base-package="com.gmail.osbornroad.repository">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+
+    <beans profile="local">
+        <context:property-placeholder
+                location="classpath:db/localBase.properties"
+                system-properties-mode="OVERRIDE"/>
+    </beans>
+
+    <beans profile="remote">
+        <context:property-placeholder
+                location="classpath:db/remoteBase.properties"
+                system-properties-mode="OVERRIDE"/>
+    </beans>
+
+    <!--Firebird-->
+    <beans>
+
+        <bean id="fireBirdDataSource"
+              class="org.apache.tomcat.jdbc.pool.DataSource"
+              p:driverClassName="org.firebirdsql.jdbc.FBDriver"
+              p:url="${firebird.url}"
+              p:username="${firebird.username}"
+              p:password="${firebird.password}"/>
+
+        <bean id="fireBirdJdbcTemplate"
+              class="org.springframework.jdbc.core.JdbcTemplate">
+            <constructor-arg ref="fireBirdDataSource"/>
+        </bean>
+    </beans>
+
+    <!--Postgres-->
+    <beans>
+
+        <bean id="postgresDataSource"
+              class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+              p:driverClassName="org.postgresql.Driver"
+              p:url="${postgres.url}"
+              p:username="${postgres.username}"
+              p:password="${postgres.password}"/>
+
+        <bean id="jpaTransactionManager"
+              class="org.springframework.orm.jpa.JpaTransactionManager">
+            <property name="entityManagerFactory" ref="eManagerFactory"/>
+        </bean>
+
+        <bean id="eManagerFactory"
+              class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+            <property name="dataSource" ref="postgresDataSource"/>
+            <property name="jpaVendorAdapter">
+                <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+            </property>
+            <property name="packagesToScan" value="com.gmail.osbornroad.model"/>
+            <property name="jpaProperties">
+                <props>
+                    <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</prop>
+                    <prop key="hibernate.show_sql">true</prop>
+                </props>
+            </property>
+        </bean>
+        <bean id="persistenceExceptionTranslationPostProcessor" class=
+                "org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+        <jpa:repositories base-package="com.gmail.osbornroad.repository"
+                          entity-manager-factory-ref="eManagerFactory"
+                          transaction-manager-ref="jpaTransactionManager"/>
+        <bean id="postgresJdbcTemplate"
+              class="org.springframework.jdbc.core.JdbcTemplate">
+            <constructor-arg ref="postgresDataSource"/>
+        </bean>
+    </beans>
+
+</beans>
