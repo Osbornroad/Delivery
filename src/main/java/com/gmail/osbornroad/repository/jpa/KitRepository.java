@@ -18,5 +18,8 @@ public interface KitRepository extends JpaRepository<Kit, Integer> {
     @Query("SELECT k.kitName FROM Kit k ORDER BY k.sortNum ASC")
     List<String> getAllKitNames();
 
+    @Query("SELECT k.wib224 FROM Kit k")
+    List <String> getUsedWib224();
+
     Kit findKitByKitName(String kitName);
 }

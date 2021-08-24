@@ -50,7 +50,7 @@ public class InitLoader {
     public Map<String, String> getMapFromExcel(String location, int firstCol, int secondCol){
         Map<String, String> map = new HashMap<>();
         Workbook workbook;
-        try(InputStream inputStream = getClass().getResourceAsStream(location);)
+        try(InputStream inputStream = getClass().getResourceAsStream(location))
         {
             workbook = new XSSFWorkbook(inputStream);
         }  catch (IOException e) {
@@ -79,7 +79,7 @@ public class InitLoader {
 
     public void finishPartLoading() {
         Workbook workbook;
-        try(InputStream inputStream = InitLoader.class.getResourceAsStream("/xlsx/Wib_codes.xlsx");) {
+        try(InputStream inputStream = InitLoader.class.getResourceAsStream("/xlsx/Wib_codes.xlsx")) {
             workbook = new XSSFWorkbook(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class InitLoader {
     public String nissanDataLoading() {
         long start = System.currentTimeMillis();
         Map<String, String> map = getMapFromExcel("/xlsx/Engine_codes.xlsx", 2, 3);
-        if(map.isEmpty() || map == null){
+        if(map.isEmpty()){
             return "Loading of Engine_codes.xlsx retuned empty or null map";
         }
         if(map.get("error") != null) {
@@ -153,7 +153,7 @@ public class InitLoader {
             note.setModelVariant(modelVariant);
             note.setSeries(series);
             note.setNumber(number);
-            note.setPlanned(planned);;
+            note.setPlanned(planned);
             note.setWib225(wib225);
             note.setWib224(wib224);
             note.setAPointDateTime(aPointDateTime);
@@ -224,7 +224,7 @@ public class InitLoader {
         return response;
     }
 
-//    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 60000)
     public void scheduler() {
         notesTableFillingFromFireBird();
     }

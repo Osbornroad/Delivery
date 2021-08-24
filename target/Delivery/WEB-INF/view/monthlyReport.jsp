@@ -105,8 +105,11 @@
                                 td.className += " totalRow";
                             // tabCell.innerHTML = data[i][col[j]];
                         }
-
                     }
+
+                    var head = table.rows[0];
+                    var firstCell = head.cells[0];
+                    firstCell.style.width = '20 px';
 
                     // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
                     var divContainer = document.getElementById("showData");
@@ -124,55 +127,6 @@
             $('#waitingModal').modal('hide');
             $('#errorModal').modal('show');
         }
-
-        /*$(document).ready(function () {
-            $.ajax({
-                url: ajaxUrl,             // указываем URL и
-                dataType: "json",                     // тип загружаемых данных
-                success: function (data, textStatus) { // вешаем свой обработчик на функцию success
-
-                    // EXTRACT VALUE FOR HTML HEADER.
-                    var col = data[0];
-
-                    // CREATE DYNAMIC TABLE.
-                    var table = document.createElement("table");
-
-                    // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
-                    var tr = table.insertRow(-1);                   // TABLE ROW.
-
-                    for (var i = 0; i < col.length; i++) {
-                        var th = document.createElement("th");      // TABLE HEADER.
-                        th.innerHTML = col[i];
-                        tr.appendChild(th);
-                    }
-
-                    // ADD JSON DATA TO THE TABLE AS ROWS.
-                    for (var i = 1; i < data.length; i++) {
-                        var row = data[i];
-                        tr = table.insertRow(-1);
-                        for (var j = 0; j < row.length; j++) {
-                            var td = document.createElement("td");
-                            td.innerHTML = row[j];
-                            tr.appendChild(td);
-                            // var tabCell = tr.insertCell(-1);
-                            if(j == 0)
-                                td.className += " cellClass";
-                            if(i == data.length - 1)
-                                td.className += " totalRow";
-                            // tabCell.innerHTML = data[i][col[j]];
-                        }
-
-                    }
-
-                    // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-                    var divContainer = document.getElementById("showData");
-                    divContainer.innerHTML = "";
-                    divContainer.appendChild(table);
-
-                }
-            });
-        })*/
 
         $(document).on('change', '.btn-file :file', function() {
             var input = $(this),

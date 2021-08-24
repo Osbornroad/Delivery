@@ -29,7 +29,7 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
 
-                <li class="nav-item dropdown">
+                <%--<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="initLoad" data-toggle="dropdown">
                         Init Load
                     </a>
@@ -40,7 +40,7 @@
                         <a class="dropdown-item disabled" href="<c:url value="/finishPartsLoading"/>">Load Finish Parts</a>
                         <a class="dropdown-item disabled" href="<c:url value="/walkFTP"/>">Check FTP</a>
                     </div>
-                </li>
+                </li>--%>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="reports" data-toggle="dropdown">Reports</a>
                     <div class="dropdown-menu">
@@ -53,8 +53,8 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="catalogs" data-toggle="dropdown">Catalogs</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item disabled" href="<c:url value="/finishParts"/>">Finish parts</a>
-                        <a class="dropdown-item disabled" href="<c:url value="/kits"/>">Kits</a>
+                        <a class="dropdown-item" href="<c:url value="/finishParts"/>">Finish parts</a>
+                        <a class="dropdown-item" href="<c:url value="/kits"/>">Kits</a>
                     </div>
 <%--                </li>
                 li class="nav-item dropdown">
