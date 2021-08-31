@@ -32,6 +32,9 @@
         .totalRow {
             font-weight: 700;
         }
+        .kitsRow {
+
+        }
     </style>
 
     <script>

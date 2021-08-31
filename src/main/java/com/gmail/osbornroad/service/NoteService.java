@@ -147,13 +147,13 @@ public class NoteService {
     }
 
     private static final String APOINT = "A001";
-    private static final LocalDateTime TODAY = LocalDate.now().atStartOfDay();
+//    private static final LocalDateTime TODAY = LocalDate.now().atStartOfDay();
 
     @Autowired
     KitService kitService;
 
     public List<Map<String, String>> getForecast() {
-        List<Note> notes = noteRepository.getForecastA001(kitService.getCurrentWib224List(), APOINT, TODAY);
+        List<Note> notes = noteRepository.getForecastA001(kitService.getCurrentWib224List(), APOINT, LocalDate.now().atStartOfDay());
         List<Kit> existKits = kitService.findAllKits();
         List<Kit> kits = new ArrayList<>();
 
@@ -368,10 +368,12 @@ public class NoteService {
 
     public String[][] getDailyReportA090(String aPoint, List<String> kits, LocalDate startDate, LocalDate endDate) {
 
+        //Getting report from database
         List<ReportA090> unfilteredReport = reportRepository.getReportA090(aPoint,
                 Timestamp.valueOf(startDate.atStartOfDay()),
                 Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
 
+        //Filtering report based on given list of Kits
         List<ReportA090> reportA090List = new ArrayList<>();
         for(ReportA090 reportA090 : unfilteredReport) {
             if(kits.contains(reportA090.getKitName()))
@@ -394,10 +396,10 @@ public class NoteService {
             partNumbers.add(part.getFinishPartNumber());
         }*/
 
+        //Get part numbers based on kit names
         List<String> partNumbers = getPartNumbers(kits);
 
         //Get list of unrepeatable dates from report
-
         List<LocalDate> dates = new ArrayList<>();
         for(ReportA090 report :reportA090List) {
             LocalDate date = report.getaPointDate();
@@ -412,10 +414,11 @@ public class NoteService {
 
         //Create 2-dimension array
 
-        int rows = partNumbers.size() + 2;
+        int rows = partNumbers.size() + 3;
         int cols = stringDates.size() + 2;
         String[][] report = new String[rows][cols];
         report[0][0] = "Part number";
+        report[rows - 2][0] = "Kits";
         report[rows - 1][0] = "Summary";
         report[0][cols - 1] = "Total";
 
@@ -431,7 +434,7 @@ public class NoteService {
         //Filling map for 1st column with part numbers
 
         Map<String, Integer> numbersMap = new LinkedHashMap<>();
-        for(int i = 1; i < report.length - 1; i++){
+        for(int i = 1; i < report.length - 2; i++){
             report[i][0] = partNumbers.get(i - 1);
             numbersMap.put(report[i][0], i);
         }
@@ -446,8 +449,10 @@ public class NoteService {
                 int rowNum = numbersMap.get(finishPart.getFinishPartNumber());
                 intReport[rowNum][colNum] = intReport[rowNum][colNum] + reportA090.getQuantity();
             }
+            intReport[rows - 2][colNum] = intReport[rows - 2][colNum] + reportA090.getQuantity();
         }
 
+        //Row's sum counting (Total)
         for(int i = 1; i < intReport.length - 1; i++) {
             int sum = 0;
             for(int j = 1; j < intReport[i].length - 1; j++) {
@@ -456,14 +461,16 @@ public class NoteService {
             intReport[i][intReport[i].length - 1] = sum;
         }
 
+        //Col's sum counting (Summary)
         for(int j = 1; j < intReport[0].length; j++){
             int sum = 0;
-            for(int i = 1; i < intReport.length - 1; i++) {
+            for(int i = 1; i < intReport.length - 2; i++) {
                 sum += intReport[i][j];
             }
             intReport[intReport.length - 1][j] = sum;
         }
 
+        //Migration from intReport to report
         for(int i = 1; i < intReport.length; i++) {
             for(int j = 1; j < intReport[i].length; j++) {
                 report[i][j] = String.valueOf(intReport[i][j]);

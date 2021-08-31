@@ -32,6 +32,9 @@
         .totalRow {
             font-weight: 700;
         }
+        .kitRow {
+            background: #ffe8a1;
+        }
     </style>
 
     <script>
@@ -88,6 +91,8 @@
                                 td.className += " cellClass";
                             if(i == data.length - 1)
                                 td.className += " totalRow";
+                            if(i == data.length - 2)
+                                td.className += " kitRow";
                             // tabCell.innerHTML = data[i][col[j]];
                         }
 
@@ -325,3 +330,4 @@
         </div>
     </div>
 </div>
+</body>

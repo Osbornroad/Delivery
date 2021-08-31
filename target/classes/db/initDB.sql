@@ -34,7 +34,7 @@ CREATE TABLE kits_finish_parts
     CONSTRAINT fk_variants_finish_parts_2 FOREIGN KEY (finish_parts_id) REFERENCES finishParts (id)
 );*/
 
-DROP TABLE IF EXISTS notes;
+/*DROP TABLE IF EXISTS notes;
 
 CREATE TABLE notes
 (
@@ -51,7 +51,7 @@ CREATE TABLE notes
   aPointDateTime     TIMESTAMP
 );
 
-ALTER TABLE notes ADD CONSTRAINT notesUnique UNIQUE (aPoint, series, number);
+ALTER TABLE notes ADD CONSTRAINT notesUnique UNIQUE (aPoint, series, number);*/
 
 /*DELETE FROM notes WHERE fieldKey > 0;*/
 
@@ -64,3 +64,16 @@ CREATE TABLE matching224
   wib224             VARCHAR
 );*/
 
+/*CREATE TABLE properties
+(
+    id                  SERIAL PRIMARY KEY,
+    propName            VARCHAR,
+    propValue           VARCHAR
+)
+*/
+
+/*INSERT INTO properties (propName, propValue)
+VALUES ('weeklyEdiDir', 'C:\Shared\10. IT\02.EDI\Weekly');*/
+
+INSERT INTO properties (propName, propValue)
+VALUES ('dailyEdiDir', 'C:\Shared\10. IT\02.EDI\Daily');

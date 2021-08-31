@@ -20,6 +20,32 @@
     }
 </style>
 
+<script>
+
+    navbarUrl = "navbar";
+
+    $(document).ready(function() {
+        updateDate();
+    });
+
+    function updateDate() {
+        $.ajax({
+            type: "GET",
+            url: navbarUrl,
+            success: function (data, textStatus) {
+                var options = { year: 'numeric', month: 'short', day: 'numeric', hour:  'numeric', minute:  'numeric'};
+                var month = data[1] - 1;
+                var date = new Date(data[0], month, data[2], data[3], data[4]/*, data[5], data[6]*/);
+                var strDate = date.toLocaleDateString("en-UK", options);
+                $('#baseUpdated').html(strDate);
+            }
+        });
+    }
+
+    setInterval(updateDate, 60000);
+
+</script>
+
 <nav class="navbar fixed-top navbar-expand-sm bg-primary navbar-dark">
     <a class="navbar-brand" href="<c:url value="/"/>">SANOH</a>
 
@@ -48,6 +74,7 @@
                         <a class="dropdown-item" href="<c:url value="/report"/>">Daily Report</a>
                         <a class="dropdown-item" href="<c:url value="/notes"/>">Database</a>
                         <a class="dropdown-item" href="<c:url value="/monthlyReport"/>">Monthly Report</a>
+                        <a class="dropdown-item" href="<c:url value="/edi"/>">EDI</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -64,7 +91,12 @@
                 </div>
                 </li>--%>
 
-            </ul>
+            </ul >
+            <span class="navbar-text pl-5" id="baseUpdatedLabel">
+                    Base updated:
+            </span>
+            <span class="navbar-text pl-1" id="baseUpdated"></span>
+
             <ul class="nav navbar-nav ml-auto">
                 <li>
                     <form:form action="logout" method="post">
@@ -102,4 +134,5 @@
                 </li>--%>
             </ul>
         </div>
+
 </nav>

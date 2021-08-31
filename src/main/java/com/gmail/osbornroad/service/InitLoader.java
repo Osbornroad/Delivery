@@ -189,6 +189,12 @@ public class InitLoader {
 
     private static final int GAP = 50000;
 
+    private static LocalDateTime BASE_UPDATED = null;
+
+    public LocalDateTime getBaseUpdated() {
+        return BASE_UPDATED;
+    }
+
     public String notesTableFillingFromFireBird() {
         long start = System.currentTimeMillis();
         Integer lastFKPostgres = noteService.getLastSavedFieldKey();
@@ -221,6 +227,8 @@ public class InitLoader {
                         unfoundedFK.toString(),
                 counter, getElapsedTime(start,finish),lastFKPostgres + 1, noteService.getLastSavedFieldKey());
         logger.info(response);
+        if (counter != 0)
+            BASE_UPDATED = LocalDateTime.now();
         return response;
     }
 
@@ -228,6 +236,7 @@ public class InitLoader {
     public void scheduler() {
         notesTableFillingFromFireBird();
     }
+
 
     private static final Path rootFtp = Paths.get("C:\\Shared\\10. IT\\ARCHIVE");
 
