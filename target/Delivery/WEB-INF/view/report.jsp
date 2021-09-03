@@ -50,6 +50,10 @@
 
 
         function updateTable() {
+            var title = $('input[name="typeReport"]:checked').val();
+            $("#title").html(title === 'dailyReport' ? "Daily report" : "Monthy report");
+
+
             $('#sendFilter').modal('hide');
             $('#waitingModal').modal('show');
             $.ajax({
@@ -72,7 +76,17 @@
 
                     for (var i = 0; i < col.length; i++) {
                         var th = document.createElement("th");      // TABLE HEADER.
-                        th.innerHTML = col[i];
+                        var integerDate;
+                        if(col[i].length == 8) {
+                            integerDate = col[i].substring(0, 4) + "-" + col[i].substring(4, 6) + "-" + col[i].substring(6);
+                        } else {
+                            integerDate = col[i].substring(0, 4) + "." + col[i].substring(4);
+                        }
+                        if (i == 0 || i == col.length - 1) {
+                            th.innerHTML = col[i];
+                        } else {
+                            th.innerHTML = integerDate;
+                        }
                         tr.appendChild(th);
                     }
 
@@ -210,7 +224,7 @@
     </div>
     <div class="row mb-4">
         <div class="col-5">
-            <h4>Daily report</h4>
+            <h4 id="title">Report</h4>
         </div>
         <div class="col-5">
             <a class="btn btn-outline-info float-right" onclick="tableToExcel('showData', 'W3C Example Table')">Export to Excel</a>
@@ -264,6 +278,16 @@
             <div class="modal-body">
                 <sf:form class="form-horizontal" id="filter">
                     <div class="form-group" >
+                        <div class="form-group" >
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeReport" id="dailyReport" value="dailyReport" checked>
+                                <label class="form-check-label" for="dailyReport">Daily</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeReport" id="monthlyReport" value="monthlyReport">
+                                <label class="form-check-label" for="monthlyReport">Monthly</label>
+                            </div>
+                        </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="aPoint" id="A001" value="A001">
                             <label class="form-check-label" for="A001">A001</label>

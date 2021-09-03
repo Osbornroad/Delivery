@@ -24,10 +24,11 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-@Service
-@EnableScheduling
+//@Service
+//@EnableScheduling
 public class InitLoader {
 
+/*
     @Autowired
     private FirebirdService firebirdService;
 
@@ -40,14 +41,15 @@ public class InitLoader {
     private static final Logger logger = LoggerFactory.getLogger(InitLoader.class);
     private static final Logger warnLogger = LoggerFactory.getLogger("warning");
 
-    LocalDateTime defaultDate= LocalDateTime.of(2000,01,01, 00, 00);
+    LocalDateTime defaultDate= LocalDateTime.of(2000, 1, 1, 0, 0);
+*/
 
-    public void wib224MatchingLoading(){
+/*    private void wib224MatchingLoading(){
         Map<String, String> map = getMapFromExcel("/xlsx/Wib_codes.xlsx", 0,1);
         match224ServiceImpl.saveMapMatch224(map);
-    }
+    }*/
 
-    public Map<String, String> getMapFromExcel(String location, int firstCol, int secondCol){
+    /*private Map<String, String> getMapFromExcel(String location, int firstCol, int secondCol){
         Map<String, String> map = new HashMap<>();
         Workbook workbook;
         try(InputStream inputStream = getClass().getResourceAsStream(location))
@@ -72,12 +74,12 @@ public class InitLoader {
             );
         }
         return map;
-    }
+    }*/
 
-    @Autowired
-    FinishPartService finishPartService;
+   /* @Autowired
+    FinishPartService finishPartService;*/
 
-    public void finishPartLoading() {
+    /*public void finishPartLoading() {
         Workbook workbook;
         try(InputStream inputStream = InitLoader.class.getResourceAsStream("/xlsx/Wib_codes.xlsx")) {
             workbook = new XSSFWorkbook(inputStream);
@@ -94,11 +96,12 @@ public class InitLoader {
             FinishPart finishPart = new FinishPart(partNumber, sortNum);
             finishPartService.saveFinishPart(finishPart);
         }
-    }
+    }*/
 
-    private final String FIRST_SEQUENCE= "201505250190";
+//    private final String FIRST_SEQUENCE= "201505250190";
 
-    public String nissanDataLoading() {
+    //Load data from Excel
+    /*public String nissanDataLoading() {
         long start = System.currentTimeMillis();
         Map<String, String> map = getMapFromExcel("/xlsx/Engine_codes.xlsx", 2, 3);
         if(map.isEmpty()){
@@ -163,9 +166,9 @@ public class InitLoader {
         long finish = System.currentTimeMillis();
         String response = String.format("nissanDataLoading() saved %d Notes for %s", counter, getElapsedTime(start,finish));
         return response;
-    }
+    }*/
 
-    private String getStringFromCell(Cell cell){
+    /*private String getStringFromCell(Cell cell){
         String cellData = "";
         switch (cell.getCellType()){
             case STRING: cellData = cell.getRichStringCellValue().getString();
@@ -176,9 +179,9 @@ public class InitLoader {
                 break;
         }
         return cellData;
-    }
+    }*/
 
-    public String getElapsedTime(long start, long finish){
+    /*public String getElapsedTime(long start, long finish){
         long duration = finish - start;
         long hours = duration/3600000;
         long minutes = (duration%3600000)/60000;
@@ -232,13 +235,13 @@ public class InitLoader {
         return response;
     }
 
-    @Scheduled(fixedDelay = 60000)
+//    @Scheduled(fixedDelay = 60000)
     public void scheduler() {
         notesTableFillingFromFireBird();
-    }
+    }*/
 
 
-    private static final Path rootFtp = Paths.get("C:\\Shared\\10. IT\\ARCHIVE");
+    /*private static final Path rootFtp = Paths.get("C:\\Shared\\10. IT\\ARCHIVE");
 
     public class MyFileVisitor extends SimpleFileVisitor<Path> {
 
@@ -367,6 +370,6 @@ public class InitLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

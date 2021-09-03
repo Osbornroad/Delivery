@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping(value = {"/"/*, "Delivery"*/})
+@RequestMapping(value = {"/"})
 public class MainPageController {
 
-    @Autowired
-    InitLoader initLoader;
+/*    @Autowired
+    InitLoader initLoader;*/
 
     private static final Logger logger = LoggerFactory.getLogger(MainPageController.class);
     private static final Logger warnLogger = LoggerFactory.getLogger("warning");
@@ -25,39 +25,22 @@ public class MainPageController {
         return "main";
     }
 
-    @GetMapping("/wib224")
+/*    @GetMapping("/wib224")
     public String wib224MatchingLoading(){
         initLoader.wib224MatchingLoading();
         return "main";
-    }
+    }*/
 
-    @GetMapping("/finishPartsLoading")
+/*    @GetMapping("/finishPartsLoading")
     public String finishPartsLoading() {
         initLoader.finishPartLoading();
         return "main";
-    }
+    }*/
 
-    @GetMapping("/nissan")
-    public String nissanDataLoading(Model model){
-        String response = initLoader.nissanDataLoading();
-//        String response = "nissanDataLoading() unavailable";
-        model.addAttribute("responseNissan", response);
-        return "main";
-    }
-
-    @GetMapping("/firebird")
-    public String firebirdDataLoading(Model model){
-//        warnLogger.warn("firebirdDataLoading started with warn");
-//        logger.info("firebirdDataLoading started with info");
-        String response = initLoader.notesTableFillingFromFireBird();
-        model.addAttribute("responseFirebird", response);
-        return "main";
-    }
-
-    @GetMapping("/walkFTP")
+/*    @GetMapping("/walkFTP")
     public String archiveCheck() {
         initLoader.walkFTP();
         return "main";
-    }
+    }*/
 
  }

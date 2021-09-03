@@ -32,7 +32,7 @@
         $.ajax({
             type: "GET",
             url: navbarUrl,
-            success: function (data, textStatus) {
+            success: function (data) {
                 var options = { year: 'numeric', month: 'short', day: 'numeric', hour:  'numeric', minute:  'numeric'};
                 var month = data[1] - 1;
                 var date = new Date(data[0], month, data[2], data[3], data[4]/*, data[5], data[6]*/);
@@ -55,25 +55,22 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
 
-                <%--<li class="nav-item dropdown">
+<%--                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="initLoad" data-toggle="dropdown">
                         Init Load
                     </a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item disabled" href="<c:url value="/wib224"/>">Load Wib224</a>
-                        <a class="dropdown-item disabled"  href="<c:url value="/nissan"/>">Load Nissan</a>
-                        <a class="dropdown-item disabled" href="<c:url value="/firebird"/>">Load Firebird</a>
-                        <a class="dropdown-item disabled" href="<c:url value="/finishPartsLoading"/>">Load Finish Parts</a>
                         <a class="dropdown-item disabled" href="<c:url value="/walkFTP"/>">Check FTP</a>
                     </div>
                 </li>--%>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="reports" data-toggle="dropdown">Reports</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="<c:url value="/forecast"/>">Forecast</a>
-                        <a class="dropdown-item" href="<c:url value="/report"/>">Daily Report</a>
+                        <a class="dropdown-item" href="<c:url value="/report"/>">Report</a>
                         <a class="dropdown-item" href="<c:url value="/notes"/>">Database</a>
-                        <a class="dropdown-item" href="<c:url value="/monthlyReport"/>">Monthly Report</a>
+<%--                        <a class="dropdown-item" href="<c:url value="/monthlyReport"/>">Monthly Report</a>--%>
                         <a class="dropdown-item" href="<c:url value="/edi"/>">EDI</a>
                     </div>
                 </li>

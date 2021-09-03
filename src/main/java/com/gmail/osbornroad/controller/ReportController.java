@@ -1,13 +1,10 @@
 package com.gmail.osbornroad.controller;
 
-import com.gmail.osbornroad.model.ReportA090;
 import com.gmail.osbornroad.repository.jpa.KitRepository;
 import com.gmail.osbornroad.service.KitService;
-import com.gmail.osbornroad.service.NoteService;
+import com.gmail.osbornroad.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.QAbstractAuditable;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,14 +13,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/report")
 public class ReportController {
 
     @Autowired
-    NoteService noteService;
+    ReportService reportService;
 
     @Autowired
     KitRepository kitRepository;
@@ -45,13 +41,14 @@ public class ReportController {
             @RequestParam(value = "aPoint") String aPoint,
             @RequestParam(value = "kits", required = false) List<String> kits,
             @RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(value = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate
+            @RequestParam(value = "endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(value = "typeReport") String typeReport
     ) {
-        if(existProjects || kits.isEmpty() || kits == null)
+        if(existProjects || kits == null || kits.isEmpty())
             kits = kitService.getCurrentKitNameList();
         if(startDate.isAfter(endDate))
             return ResponseEntity.badRequest().body(null);
-        String[][] report = noteService.getDailyReportA090(aPoint, kits, startDate, endDate);
+        String[][] report = reportService.getReport(aPoint, kits, startDate, endDate, typeReport);
         return ResponseEntity.ok(report);
     }
 

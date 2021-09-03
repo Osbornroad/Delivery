@@ -5,6 +5,7 @@
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
 
 <head>
+<title></title>
 
 <jsp:include page="fragments/headerTags.jsp"/>
 
@@ -43,20 +44,23 @@
 
         $(document).ready(function() {
             var date = new Date();
-            var currentDate = date.toISOString().slice(0,10);
-            document.getElementById("endDate").value = currentDate;
+            document.getElementById("endDate").value = date.toISOString().slice(0, 10);
             $('#sendFilter').modal('show');
         });
 
 
         function updateTable() {
+            var title = $('input[name="typeReport"]:checked').val();
+            $("#title").html(title === 'dailyReport' ? "Daily report" : "Monthy report");
+
+
             $('#sendFilter').modal('hide');
             $('#waitingModal').modal('show');
             $.ajax({
                 type: "POST",
                 url: ajaxUrl,
                 data: $('#filter').serialize(),
-                success: function (data, textStatus) { // вешаем свой обработчик на функцию success
+                success: function (data) { // вешаем свой обработчик на функцию success
 
                     // EXTRACT VALUE FOR HTML HEADER.
                     var col = data[0];
@@ -72,7 +76,17 @@
 
                     for (var i = 0; i < col.length; i++) {
                         var th = document.createElement("th");      // TABLE HEADER.
-                        th.innerHTML = col[i];
+                        var integerDate;
+                        if(col[i].length === 8) {
+                            integerDate = col[i].substring(0, 4) + "-" + col[i].substring(4, 6) + "-" + col[i].substring(6);
+                        } else {
+                            integerDate = col[i].substring(0, 4) + "." + col[i].substring(4);
+                        }
+                        if (i === 0 || i === col.length - 1) {
+                            th.innerHTML = col[i];
+                        } else {
+                            th.innerHTML = integerDate;
+                        }
                         tr.appendChild(th);
                     }
 
@@ -87,11 +101,11 @@
                             td.innerHTML = row[j];
                             tr.appendChild(td);
                             // var tabCell = tr.insertCell(-1);
-                            if(j == 0)
+                            if(j === 0)
                                 td.className += " cellClass";
-                            if(i == data.length - 1)
+                            if(i === data.length - 1)
                                 td.className += " totalRow";
-                            if(i == data.length - 2)
+                            if(i === data.length - 2)
                                 td.className += " kitRow";
                             // tabCell.innerHTML = data[i][col[j]];
                         }
@@ -173,7 +187,7 @@
 
         var tableToExcel = (function() {
             var uri = 'data:application/vnd.ms-excel;base64,'
-                , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+                , template = '<html xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
                 , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
                 , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
             return function(table, name) {
@@ -210,7 +224,7 @@
     </div>
     <div class="row mb-4">
         <div class="col-5">
-            <h4>Daily report</h4>
+            <h4 id="title">Report</h4>
         </div>
         <div class="col-5">
             <a class="btn btn-outline-info float-right" onclick="tableToExcel('showData', 'W3C Example Table')">Export to Excel</a>
@@ -264,6 +278,16 @@
             <div class="modal-body">
                 <sf:form class="form-horizontal" id="filter">
                     <div class="form-group" >
+                        <div class="form-group" >
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeReport" id="dailyReport" value="dailyReport" checked>
+                                <label class="form-check-label" for="dailyReport">Daily</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="typeReport" id="monthlyReport" value="monthlyReport">
+                                <label class="form-check-label" for="monthlyReport">Monthly</label>
+                            </div>
+                        </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="aPoint" id="A001" value="A001">
                             <label class="form-check-label" for="A001">A001</label>

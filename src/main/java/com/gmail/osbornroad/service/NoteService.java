@@ -36,22 +36,9 @@ public class NoteService {
     }
 
     @Transactional(readOnly = true)
-    public List<Note> findAllNotes() {
-        List<Note> noteList = new ArrayList<>();
-        Iterable<Note> iterable = noteRepository.findAll();
-        iterable.forEach(noteList::add);
-        return noteList;
-    }
-
-    @Transactional(readOnly = true)
     public Collection<Note> getBetweenDates(List<String> aPoints, LocalDateTime startDate, LocalDateTime endDate) {
-        Collection<Note> notes = noteRepository.getBetweenDates(aPoints, startDate, endDate);
-//        List<Note> noteList = new ArrayList<>();
-//        Iterable<Note> iterable = noteRepository.getBetween(startDate, endDate);
-//        iterable.forEach(noteList::add);
-        return notes;
+        return noteRepository.getBetweenDates(aPoints, startDate, endDate);
     }
-
 
     public Note saveNote(Note note) {
         Note savedNote = null;
@@ -64,13 +51,11 @@ public class NoteService {
         } catch (Exception e) {
             warnLogger.warn(e.getMessage());
         }
-
         return savedNote;
     }
 
     public Note getLastSavedNote(){
         Optional<Note> optional = Optional.ofNullable(noteRepository.findTopByOrderByIdDesc());
-//        logger.info("getLastSavedNote() returns {}", optional);
         return optional.orElse(null);
     }
 
@@ -83,28 +68,18 @@ public class NoteService {
                 lastFieldKey = fieldKey;
             }
         }
-//        logger.info("getLastSavedFieldKey() returns {}", lastFieldKey);
         return lastFieldKey;
     }
 
     public List<String> getAllSeries() {
-        List<String> series = noteRepository.getAllSeries();
-/*                series.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return compare(o1, o2);
-            }
-        });*/
-        return series;
+        return noteRepository.getAllSeries();
     }
 
     public List<String> getAllWib224() {
-        List<String> wib224 = noteRepository.getAllWib224();
-        return wib224;
+        return noteRepository.getAllWib224();
     }
 
-    public void checkGaps() {
-//        List<Note> noteList = findAllNotes();
+    /*public void checkGaps() {
         Note noteA080 = null;
         Note noteA090 = null;
         for (int i = 127500; i < 811000; i++) {
@@ -144,10 +119,9 @@ public class NoteService {
                 }
             }
         }
-    }
+    }*/
 
     private static final String APOINT = "A001";
-//    private static final LocalDateTime TODAY = LocalDate.now().atStartOfDay();
 
     @Autowired
     KitService kitService;
@@ -156,7 +130,6 @@ public class NoteService {
         List<Note> notes = noteRepository.getForecastA001(kitService.getCurrentWib224List(), APOINT, LocalDate.now().atStartOfDay());
         List<Kit> existKits = kitService.findAllKits();
         List<Kit> kits = new ArrayList<>();
-
         List<LocalDate> dates = new ArrayList<>();
 
         //For all Notes
@@ -247,107 +220,14 @@ public class NoteService {
         return forecast;
     }
 
-    @Autowired
+/*    @Autowired
     ReportRepository reportRepository;
 
     @Autowired
     KitRepository kitRepository;
 
-    public String[][] getMonthlyReport(String aPoint, List<String> kits, LocalDate startDate, LocalDate endDate) {
-
-        List<MonthlyReportItem> unfilteredReport = reportRepository.getMonthlyReport(aPoint,
-                Timestamp.valueOf(startDate.atStartOfDay()),
-                Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
-
-        List<MonthlyReportItem> monthlyReport = new ArrayList<>();
-        for(MonthlyReportItem item : unfilteredReport) {
-            if(kits.contains(item.getKitName()))
-                monthlyReport.add(item);
-        }
-
-        List<String> partNumbers = getPartNumbers(kits);
-
-        //Get list of unrepeatable dates from report
-
-        List<Integer> months = new ArrayList<>();
-        for(MonthlyReportItem item : monthlyReport) {
-            int yearMonth = item.getYearMonth();
-            if(!months.contains(yearMonth))
-                months.add(yearMonth);
-        }
-        months.sort(Comparator.comparingInt(o -> o));
-        List<String> stringMonths = new ArrayList<>();
-        for(Integer yearMonth : months) {
-            stringMonths.add(yearMonth.toString());
-        }
-
-        //Create 2-dimension array
-
-        int rows = partNumbers.size() + 2;
-        int cols = months.size() + 2;
-        String[][] report = new String[rows][cols];
-        report[0][0] = "Part number";
-        report[rows - 1][0] = "Summary";
-        report[0][cols - 1] = "Total";
-
-        //Filling map for 1 st row with yearMonths
-
-        int length = report[0].length;
-        Map<String, Integer> monthsMap = new LinkedHashMap<>();
-        for(int i = 1; i < length - 1; i++) {
-            report[0][i] = stringMonths.get(i - 1);
-            monthsMap.put(report[0][i], i);
-        }
-
-        //Filling map for 1st column with part numbers
-
-        Map<String, Integer> numbersMap = new LinkedHashMap<>();
-        for(int i = 1; i < report.length - 1; i++){
-            report[i][0] = partNumbers.get(i - 1);
-            numbersMap.put(report[i][0], i);
-        }
-
-        //Create 2-dimension array with only results
-
-        int[][] intReport = new int[rows][cols];
-
-        for(MonthlyReportItem item : monthlyReport) {
-            int colNum = monthsMap.get(item.getYearMonth().toString());
-            Set<FinishPart> finishPartSet = kitRepository.findKitByKitName(item.getKitName()).getFinishPartSet();
-            for(FinishPart finishPart : finishPartSet) {
-                int rowNum = numbersMap.get(finishPart.getFinishPartNumber());
-                intReport[rowNum][colNum] = intReport[rowNum][colNum] + item.getQuantity();
-            }
-        }
-
-        for(int i = 1; i < intReport.length - 1; i++) {
-            int sum = 0;
-            for(int j = 1; j < intReport[i].length - 1; j++) {
-                sum += intReport[i][j];
-            }
-            intReport[i][intReport[i].length - 1] = sum;
-        }
-
-        for(int j = 1; j < intReport[0].length; j++){
-            int sum = 0;
-            for(int i = 1; i < intReport.length - 1; i++) {
-                sum += intReport[i][j];
-            }
-            intReport[intReport.length - 1][j] = sum;
-        }
-
-        for(int i = 1; i < intReport.length; i++) {
-            for(int j = 1; j < intReport[i].length; j++) {
-                report[i][j] = String.valueOf(intReport[i][j]);
-            }
-        }
-
-        return report;
-
-    }
-
     private List<String> getPartNumbers(List<String> kits) {
-        //Get part numbers based on kit names
+
         List<Kit> kitList = kitRepository.findAllByKitNameIn(kits);
 
         List<FinishPart> finishParts = new ArrayList<>();
@@ -364,71 +244,55 @@ public class NoteService {
         }
 
         return partNumbers;
-    }
+    }*/
 
-    public String[][] getDailyReportA090(String aPoint, List<String> kits, LocalDate startDate, LocalDate endDate) {
+/*    public String[][] getReport(String aPoint, List<String> kits, LocalDate startDate, LocalDate endDate, String typeReport) {
 
-        //Getting report from database
-        List<ReportA090> unfilteredReport = reportRepository.getReportA090(aPoint,
+        //Getting report from repository
+        List<ReportItem> unfilteredReport = reportRepository.getReport(aPoint,
                 Timestamp.valueOf(startDate.atStartOfDay()),
-                Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()));
+                Timestamp.valueOf(endDate.plusDays(1).atStartOfDay()), typeReport);
 
-        //Filtering report based on given list of Kits
-        List<ReportA090> reportA090List = new ArrayList<>();
-        for(ReportA090 reportA090 : unfilteredReport) {
-            if(kits.contains(reportA090.getKitName()))
-                reportA090List.add(reportA090);
+        //Filtering report by given kits
+        List<ReportItem> reportItems = new ArrayList<>();
+        for(ReportItem item : unfilteredReport) {
+            if(kits.contains(item.getKitName()))
+                reportItems.add(item);
         }
 
-        //Get part numbers based on kit names
-/*        List<Kit> kitList = kitRepository.findAllByKitNameIn(kits);
-
-        List<FinishPart> finishParts = new ArrayList<>();
-        for(Kit kit : kitList) {
-            for(FinishPart part : kit.getFinishPartSet()) {
-                if(!finishParts.contains(part))
-                    finishParts.add(part);
-            }
-        }
-        finishParts.sort(Comparator.comparingInt(FinishPart::getSortNum));
-        List<String> partNumbers = new ArrayList<>();
-        for(FinishPart part : finishParts) {
-            partNumbers.add(part.getFinishPartNumber());
-        }*/
-
-        //Get part numbers based on kit names
+        //Getting part numbers based on kit names
         List<String> partNumbers = getPartNumbers(kits);
 
-        //Get list of unrepeatable dates from report
-        List<LocalDate> dates = new ArrayList<>();
-        for(ReportA090 report :reportA090List) {
-            LocalDate date = report.getaPointDate();
-            if(!dates.contains(date))
-                dates.add(date);
+        //Getting list of unrepeatable dates from report
+        List<Integer> dateUnits = new ArrayList<>();
+        for(ReportItem item : reportItems) {
+            int integerDate = item.getIntegerDate();
+            if(!dateUnits.contains(integerDate))
+                dateUnits.add(integerDate);
         }
-        dates.sort(LocalDate::compareTo);
-        List<String> stringDates = new ArrayList<>();
-        for(LocalDate date : dates) {
-            stringDates.add(date.toString());
+        dateUnits.sort(Comparator.comparingInt(o -> o));
+        List<String> stringDateUnits = new ArrayList<>();
+        for(Integer dateUnit : dateUnits) {
+            stringDateUnits.add(dateUnit.toString());
         }
 
         //Create 2-dimension array
 
         int rows = partNumbers.size() + 3;
-        int cols = stringDates.size() + 2;
+        int cols = dateUnits.size() + 2;
         String[][] report = new String[rows][cols];
         report[0][0] = "Part number";
         report[rows - 2][0] = "Kits";
         report[rows - 1][0] = "Summary";
         report[0][cols - 1] = "Total";
 
-        //Filling map for 1 st row with dates
+        //Filling map for 1 st row with dateUnits
 
         int length = report[0].length;
-        Map<String, Integer> datesMap = new LinkedHashMap<>();
+        Map<String, Integer> dateUnitsMap = new LinkedHashMap<>();
         for(int i = 1; i < length - 1; i++) {
-            report[0][i] = stringDates.get(i - 1);
-            datesMap.put(report[0][i], i);
+            report[0][i] = stringDateUnits.get(i - 1);
+            dateUnitsMap.put(report[0][i], i);
         }
 
         //Filling map for 1st column with part numbers
@@ -442,14 +306,15 @@ public class NoteService {
         //Create 2-dimension array with only results
 
         int[][] intReport = new int[rows][cols];
-        for(ReportA090 reportA090 : reportA090List) {
-            int colNum = datesMap.get(reportA090.getaPointDate().toString());
-            Set<FinishPart> finishPartSet = kitRepository.findKitByKitName(reportA090.getKitName()).getFinishPartSet();
+
+        for(ReportItem item : reportItems) {
+            int colNum = dateUnitsMap.get(item.getIntegerDate().toString());
+            Set<FinishPart> finishPartSet = kitRepository.findKitByKitName(item.getKitName()).getFinishPartSet();
             for(FinishPart finishPart : finishPartSet) {
                 int rowNum = numbersMap.get(finishPart.getFinishPartNumber());
-                intReport[rowNum][colNum] = intReport[rowNum][colNum] + reportA090.getQuantity();
+                intReport[rowNum][colNum] = intReport[rowNum][colNum] + item.getQuantity();
             }
-            intReport[rows - 2][colNum] = intReport[rows - 2][colNum] + reportA090.getQuantity();
+            intReport[rows - 2][colNum] = intReport[rows - 2][colNum] + item.getQuantity();
         }
 
         //Row's sum counting (Total)
@@ -477,29 +342,7 @@ public class NoteService {
             }
         }
 
-
-
-        /*for(ReportA090 reportA090 : reportA090List) {
-            int colNum = datesMap.get(reportA090.getaPointDate().toString());
-            Set<FinishPart> finishPartSet = kitRepository.findKitByKitName(reportA090.getKitName()).getFinishPartSet();
-            for(FinishPart finishPart : finishPartSet) {
-                int rowNum = numbersMap.get(finishPart.getFinishPartNumber());
-                int savedValue = 0;
-                try {
-                    savedValue = Integer.parseInt(report[rowNum][colNum]);
-                } catch (NumberFormatException e) {
-
-                }
-                report[rowNum][colNum] = String.valueOf(savedValue + reportA090.getQuantity());
-            }
-        }
-        int sumRowIndex = report.length - 1;
-        report[sumRowIndex][0] = "Summary";*/
-
-
-
         return report;
-    }
-
+    }*/
 
 }

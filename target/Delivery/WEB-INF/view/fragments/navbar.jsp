@@ -71,9 +71,9 @@
                     <a class="nav-link dropdown-toggle" href="#" id="reports" data-toggle="dropdown">Reports</a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="<c:url value="/forecast"/>">Forecast</a>
-                        <a class="dropdown-item" href="<c:url value="/report"/>">Daily Report</a>
+                        <a class="dropdown-item" href="<c:url value="/report"/>">Report</a>
                         <a class="dropdown-item" href="<c:url value="/notes"/>">Database</a>
-                        <a class="dropdown-item" href="<c:url value="/monthlyReport"/>">Monthly Report</a>
+<%--                        <a class="dropdown-item" href="<c:url value="/monthlyReport"/>">Monthly Report</a>--%>
                         <a class="dropdown-item" href="<c:url value="/edi"/>">EDI</a>
                     </div>
                 </li>
