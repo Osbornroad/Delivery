@@ -1,12 +1,15 @@
 package com.gmail.osbornroad.controller;
 
 import com.gmail.osbornroad.service.InitLoader;
+import com.gmail.osbornroad.service.NoteService;
+import com.gmail.osbornroad.service.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.net.spi.nameservice.NameService;
 
 import java.time.LocalDateTime;
 
@@ -14,12 +17,12 @@ import java.time.LocalDateTime;
 public class NavbarController {
 
     @Autowired
-    InitLoader initLoader;
+    NoteService noteService;
 
     @GetMapping(value = "/navbar", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<LocalDateTime> getDateOfUpdating() {
-        LocalDateTime dateTime = initLoader.getBaseUpdated();
+        LocalDateTime dateTime = noteService.getLastSavedDate();
         return ResponseEntity.ok(dateTime);
     }
 }

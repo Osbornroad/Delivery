@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -7,11 +7,15 @@
     <head>
         <jsp:include page="fragments/headerTags.jsp"/>
 
+
     </head>
 
     <body>
 
     <jsp:include page="fragments/navbar.jsp"/>
+    <div>
+        <span id="error"></span>
+    </div>
 
 
     </body>

@@ -7,6 +7,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.nio.file.*;
@@ -16,8 +17,8 @@ import java.time.LocalDate;
 import java.util.*;
 
 @Service
+@Transactional
 public class LoaderEDI {
-
 
     @Autowired
     FinishPartRepository finishPartRepository;

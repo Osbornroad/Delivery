@@ -1,0 +1,44 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security.xsd ">
+
+    <http pattern="/resources/**" security="none"/>
+    <http pattern="/webjars/**" security="none"/>
+
+    <http use-expressions="true">
+
+        <intercept-url pattern="/finishParts/**" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url pattern="/kits/**" access="hasRole('ROLE_ADMIN')"/>
+
+        <http-basic/>
+        <logout
+                logout-success-url="/"
+        />
+        <access-denied-handler ref="customAccessDeniedHandler"/>
+        <form-login
+                login-page="/login"
+                login-processing-url="/j_spring_security_check"
+                authentication-failure-url="/login?error"
+                default-target-url="/"
+                always-use-default-target="true"
+        />
+        <anonymous username="guest" granted-authority="ROLE_ANONYMOUS"/>
+<!--        <csrf disabled="true"/>-->
+        <csrf/>
+    </http>
+    <beans:bean name="customAccessDeniedHandler"
+          class="com.gmail.osbornroad.exception.CustomAccessDeniedHandler" />
+
+    <authentication-manager>
+        <authentication-provider>
+            <user-service>
+                <user name="user" password="{noop}user" authorities="ROLE_USER"/>
+                <user name="admin" password="{noop}4299Frta#2" authorities="ROLE_ADMIN"/>
+            </user-service>
+        </authentication-provider>
+    </authentication-manager>
+</beans:beans>

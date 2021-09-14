@@ -19,8 +19,9 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <org.springframework.version>5.2.9.RELEASE</org.springframework.version>
-    <org.springframework.data.version>2.3.4.RELEASE</org.springframework.data.version>
+    <org.springframework.version>5.3.9</org.springframework.version>
+    <org.springframework.data.version>2.5.4</org.springframework.data.version>
+    <spring-security.version>5.5.2</spring-security.version>
     <!-- Logging -->
     <logback.version>1.2.3</logback.version>
     <slf4j.version>1.7.30</slf4j.version>
@@ -28,7 +29,11 @@
 
     <dependencies>
 
-    <!-- Spring -->
+
+
+
+
+      <!-- Spring -->
 <!--      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
@@ -70,6 +75,29 @@
         <version>${org.springframework.data.version}</version>
       </dependency>-->
 
+      <!--security-->
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-taglibs</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring-security.version}</version>
+      </dependency>
+
+
 <!--      Excel connection-->
       <dependency>
         <groupId>org.apache.poi</groupId>
@@ -86,8 +114,17 @@
       <dependency>
         <groupId>com.opencsv</groupId>
         <artifactId>opencsv</artifactId>
-        <version>5.3</version>
+        <version>5.5.2</version>
+        <!--<exclusions>
+          <exclusion>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+          </exclusion>
+        </exclusions>-->
       </dependency>
+
+
+
 
       <!-- Logging with SLF4J & LogBack -->
       <dependency>
@@ -167,7 +204,7 @@
       <dependency>
         <groupId>org.webjars</groupId>
         <artifactId>webjars-locator</artifactId>
-        <version>0.40</version>
+        <version>0.42</version>
         <exclusions>
           <exclusion>
             <artifactId>jackson-databind</artifactId>
@@ -181,6 +218,10 @@
             <artifactId>slf4j-api</artifactId>
             <groupId>org.slf4j</groupId>
           </exclusion>
+            <exclusion>
+              <groupId>org.apache.commons</groupId>
+              <artifactId>commons-lang3</artifactId>
+            </exclusion>
         </exclusions>
       </dependency>
 

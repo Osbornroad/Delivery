@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,11 +36,11 @@ public class Scheduler {
 
     private static final int GAP = 50000;
 
-    private static LocalDateTime BASE_UPDATED = null;
+/*    private static LocalDateTime BASE_UPDATED = null;
 
     public LocalDateTime getBaseUpdated() {
         return BASE_UPDATED;
-    }
+    }*/
 
     public void notesTableFillingFromFireBird() {
         long start = System.currentTimeMillis();
@@ -73,11 +74,11 @@ public class Scheduler {
                         unfoundedFK.toString(),
                 counter, getElapsedTime(start,finish),lastFKPostgres + 1, noteService.getLastSavedFieldKey());
         logger.info(response);
-        if (counter != 0)
-            BASE_UPDATED = LocalDateTime.now();
+/*        if (counter != 0)
+            BASE_UPDATED = LocalDateTime.now();*/
     }
 
-    //    @Scheduled(fixedDelay = 60000)
+//        @Scheduled(fixedDelay = 60000)
     public void scheduler() {
         notesTableFillingFromFireBird();
     }

@@ -59,6 +59,18 @@ public class NoteService {
         return optional.orElse(null);
     }
 
+    public LocalDateTime getLastSavedDate() {
+        Note lastNote = getLastSavedNote();
+        LocalDateTime lastDate = LocalDateTime.MIN;
+        if(null != lastNote) {
+            LocalDateTime date = lastNote.getAPointDateTime();
+            if(null != date){
+                lastDate = date;
+            }
+        }
+        return lastDate;
+    }
+
     public Integer getLastSavedFieldKey(){
         Integer lastFieldKey = 0;
         Note lastNote = getLastSavedNote();

@@ -140,18 +140,28 @@
                 type: "POST",
                 url: ajaxUrl,
                 data: form.serialize(),
-                success: function () {
+                success: function (data, textStatus) {
+                    if (data.redirect) {
+                        return;
+                    }
                     $('#editRow').modal('hide');
                     table.ajax.reload();
                     // successNoty('common.saved');
                 },
                 statusCode:{
-                    422: function (data) {
+/*                    422: function (data) {
                         error422();
                     },
                     406: function (data) {
                         error406();
-                    }
+                    },
+                    302: function() {
+                        alert( "access denied" );
+                    },*/
+/*                    403: function() {
+                        $('#editRow').modal('hide');
+                        alert( "Access denied" );
+                    }*/
                 }
             });
         }
@@ -263,6 +273,7 @@
         </div>
         <div class="col-5">
             <a class="btn btn-outline-info float-right" onclick="openModalEdit('create')"><span class="glyphicon glyphicon-plus"></span></a>
+        </div>
     </div>
     <div class="row">
         <div class="col-10">

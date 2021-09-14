@@ -16,6 +16,8 @@
 <!--    <context:annotation-config/>-->
 <!--    <context:component-scan base-package="com.gmail.osbornroad"/>-->
 
+    <import resource="spring-security.xml"/>
+
     <tx:annotation-driven />
 
     <context:component-scan base-package="com.gmail.osbornroad.repository">
