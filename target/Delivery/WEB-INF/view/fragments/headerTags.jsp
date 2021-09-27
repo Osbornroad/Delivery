@@ -10,8 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <%--Csfr token--%>
-<%--    <meta name="_csrf" content="${_csrf.token}"/>
-    <meta name="_csrf_header" content="${_csrf.headerName}"/>--%>
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/webjars/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -24,9 +24,7 @@
     <script src="${pageContext.request.contextPath}/webjars/datatables/1.10.21/js/dataTables.bootstrap4.min.js"></script>
     <script src="${pageContext.request.contextPath}/webjars/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/resources/js/bootbox.min.js"></script>
-<%--    <script src="${pageContext.request.contextPath}/resources/js/moment.js"></script>--%>
-<%--    <script src="${pageContext.request.contextPath}/resources/js/generalScripts.js"></script>--%>
-
+    <script src="${pageContext.request.contextPath}/resources/js/commonScripts.js"></script>
 
 
 </head>

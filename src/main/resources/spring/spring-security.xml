@@ -11,8 +11,9 @@
 
     <http use-expressions="true">
 
-        <intercept-url pattern="/finishParts/**" access="hasRole('ROLE_ADMIN')"/>
-        <intercept-url pattern="/kits/**" access="hasRole('ROLE_ADMIN')"/>
+<!--        <intercept-url pattern="/finishParts/**" access="hasRole('ROLE_ADMIN')"/>-->
+        <intercept-url method="DELETE" pattern="/**" access="hasRole('ROLE_ADMIN')"/>
+        <intercept-url method="POST" pattern="/**" access="hasRole('ROLE_ADMIN')"/>
 
         <http-basic/>
         <logout

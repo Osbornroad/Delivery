@@ -48,10 +48,13 @@
             $('#sendFilter').modal('show');
         });
 
+        function enterPress() {
+            renderTable();
+        }
 
-        function updateTable() {
+        function renderTable() {
             var title = $('input[name="typeReport"]:checked').val();
-            $("#title").html(title === 'dailyReport' ? "Daily report" : "Monthy report");
+            $("#title").html(title === 'dailyReport' ? "Daily report" : "Monthly report");
 
 
             $('#sendFilter').modal('hide');
@@ -124,79 +127,6 @@
 
         }
 
-        function showErrorModal() {
-            $('#waitingModal').modal('hide');
-            $('#errorModal').modal('show');
-        }
-
-        /*$(document).ready(function () {
-            $.ajax({
-                url: ajaxUrl,             // указываем URL и
-                dataType: "json",                     // тип загружаемых данных
-                success: function (data, textStatus) { // вешаем свой обработчик на функцию success
-
-                    // EXTRACT VALUE FOR HTML HEADER.
-                    var col = data[0];
-
-                    // CREATE DYNAMIC TABLE.
-                    var table = document.createElement("table");
-
-                    // CREATE HTML TABLE HEADER ROW USING THE EXTRACTED HEADERS ABOVE.
-
-                    var tr = table.insertRow(-1);                   // TABLE ROW.
-
-                    for (var i = 0; i < col.length; i++) {
-                        var th = document.createElement("th");      // TABLE HEADER.
-                        th.innerHTML = col[i];
-                        tr.appendChild(th);
-                    }
-
-                    // ADD JSON DATA TO THE TABLE AS ROWS.
-                    for (var i = 1; i < data.length; i++) {
-                        var row = data[i];
-                        tr = table.insertRow(-1);
-                        for (var j = 0; j < row.length; j++) {
-                            var td = document.createElement("td");
-                            td.innerHTML = row[j];
-                            tr.appendChild(td);
-                            // var tabCell = tr.insertCell(-1);
-                            if(j == 0)
-                                td.className += " cellClass";
-                            if(i == data.length - 1)
-                                td.className += " totalRow";
-                            // tabCell.innerHTML = data[i][col[j]];
-                        }
-
-                    }
-
-                    // FINALLY ADD THE NEWLY CREATED TABLE WITH JSON DATA TO A CONTAINER.
-                    var divContainer = document.getElementById("showData");
-                    divContainer.innerHTML = "";
-                    divContainer.appendChild(table);
-
-                }
-            });
-        })*/
-
-        $(document).on('change', '.btn-file :file', function() {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-
-        var tableToExcel = (function() {
-            var uri = 'data:application/vnd.ms-excel;base64,'
-                , template = '<html xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
-                , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-                , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-            return function(table, name) {
-                if (!table.nodeType) table = document.getElementById(table)
-                var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-                window.location.href = uri + base64(format(template, ctx))
-            }
-        })()
-
         function clickCheckbox() {
             var checkbox = document.getElementById("existProjectsCheckbox");
             var exist = document.getElementById("existProjects");
@@ -227,7 +157,7 @@
             <h4 id="title">Report</h4>
         </div>
         <div class="col-5">
-            <a class="btn btn-outline-info float-right" onclick="tableToExcel('showData', 'W3C Example Table')">Export to Excel</a>
+            <a class="btn btn-outline-info float-right" onclick="tableToExcel('showData', 'Report')">Export to Excel</a>
         </div>
     </div>
     <div class="row mb-4">
@@ -243,9 +173,9 @@
         <div class="modal-content">
             <div class="modal-body">
                 <p>Data are loading now. Please wait...</p>
-            </div>
+           </div>
         </div>
-    </div>
+         </div>
 </div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="errorModal" data-toggle="modal" data-backdrop="static" data-keyboard="false">
@@ -337,7 +267,7 @@
                     </div>
 
                     <div class="form-group">
-                        <button class="btn btn-primary float-right" onclick="updateTable()" type="button">
+                        <button class="btn btn-primary float-right" onclick="enterPress()" type="button">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         </button>
                     </div>

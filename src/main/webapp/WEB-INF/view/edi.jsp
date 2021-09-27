@@ -50,8 +50,11 @@
 
         });
 
+        function enterPress() {
+            renderTable();
+        }
 
-        function updateTable() {
+        function renderTable() {
 
             $('#filePath').val( $('#filePath').val().replaceAll('\"', ''));
 
@@ -123,44 +126,6 @@
             });
         }
 
-        function showErrorModal() {
-            $('#waitingModal').modal('hide');
-            $('#errorModal').modal('show');
-        }
-
-        $(document).on('change', '.btn-file :file', function() {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-        });
-
-        var tableToExcel = (function() {
-            var uri = 'data:application/vnd.ms-excel;base64,'
-                , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
-                , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
-                , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
-            return function(table, name) {
-                if (!table.nodeType) table = document.getElementById(table)
-                var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
-                window.location.href = uri + base64(format(template, ctx))
-            }
-        })()
-
-        $(document).ready(function() {
-            $(window).keydown(function(event){
-                if(event.keyCode == 13) {
-                    // $('#submit').focus();
-                    var focused = document.activeElement;
-                    if ($(focused).hasClass("enter-pressed")) {
-                    } else {
-                        event.preventDefault();
-                        updateTable();
-                    }
-                }
-            });
-        });
-
     </script>
 
 
@@ -177,7 +142,7 @@
             <h4 id="title">EDI forecast</h4>
         </div>
         <div class="col-5">
-            <a class="btn btn-outline-info float-right" onclick="tableToExcel('showData', 'W3C Example Table')">Export to Excel</a>
+            <a class="btn btn-outline-info float-right" onclick="tableToExcel('showData', 'EDI')">Export to Excel</a>
         </div>
     </div>
     <div class="row mb-0">
@@ -258,7 +223,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-primary float-right enter-pressed" id="submit" onclick="updateTable()" type="button">
+                        <button class="btn btn-primary float-right enter-pressed" id="submit" onclick="renderTable()" type="button">
                             <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                         </button>
                     </div>

@@ -16,12 +16,12 @@
 
     <script>
 
-        ajaxUrl = "finishParts/ajax/";
-        reference = "Finish Part";
+        ajaxUrl = "parts/ajax/";
+        reference = "Part";
         var error = "";
 
         $(document).ready(function () {
-            table = $('#finishPartsTable').DataTable({
+            table = $('#partsTable').DataTable({
                 ajax : {
                     url : ajaxUrl,
                     dataSrc : ""
@@ -31,7 +31,13 @@
                         data: "id"
                     },
                     {
-                        data: "finishPartNumber"
+                        data: "partNumber"
+                    },
+                    {
+                        data: "partType"
+                    },
+                    {
+                        data: "snp"
                     },
                     {
                         data: "sortNum"
@@ -62,7 +68,7 @@
         }
 
         $('#editRow').on('shown.bs.modal', function () {
-            $('#finishPartNumber').trigger('focus')
+            $('#partNumber').trigger('focus')
         })
 
         function setInitCheckbox() {
@@ -70,12 +76,6 @@
 
         function enterPress() {
             save();
-        }
-
-        function generateLinkToPart() {
-            save();
-            var modalId = document.getElementById("id").value;
-            window.open("finishPart/" + modalId, "_self");
         }
 
     </script>
@@ -92,7 +92,7 @@
     </div>
     <div class="row mb-4">
         <div class="col-5">
-            <h4>Finish Parts</h4>
+            <h4>Parts</h4>
         </div>
         <div class="col-5">
             <a class="btn btn-outline-info float-right" onclick="openModalEdit('create')"><span class="glyphicon glyphicon-plus"></span></a>
@@ -100,11 +100,13 @@
     </div>
     <div class="row">
         <div class="col-10">
-            <table class="table table-hover table-striped display table-sm small" id="finishPartsTable">
+            <table class="table table-hover table-striped display table-sm small" id="partsTable">
                 <thead class="thead-light">
                 <tr>
                     <th class="p-1 align-middle text-left" style="width: 60px">ID</th>
-                    <th class="p-1 align-middle text-left" >Finish Part number</th>
+                    <th class="p-1 align-middle text-left" >Part number</th>
+                    <th class="p-1 align-middle text-left" >Part type</th>
+                    <th class="p-1 align-middle text-left" >SNP</th>
                     <th class="p-1 align-middle text-left" >Sort number</th>
                     <th style="width:30px"></th>
                     <th class="text-center" style="width:30px"></th>
@@ -126,10 +128,24 @@
                 <sf:form class="form-horizontal" id="detailsForm">
                     <input type="hidden" id="id" name="id" class="to-empty">
                     <div class="form-group">
-                        <label for="finishPartNumber" class="control-label col-xs-3">Finish part number</label>
+                        <label for="partNumber" class="control-label col-xs-3">Part number</label>
                         <div class="col-xs-9">
-                            <input class="form-control to-empty" id="finishPartNumber" name="finishPartNumber"
-                                   placeholder="Input Finish part number">
+                            <input class="form-control to-empty" id="partNumber" name="partNumber"
+                                   placeholder="Input Part number">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="partType" class="control-label col-xs-3">Part type</label>
+                        <div class="col-xs-9">
+                            <input class="form-control to-empty" id="partType" name="partType"
+                                   placeholder="Input Part type">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="snp" class="control-label col-xs-3">SNP</label>
+                        <div class="col-xs-9">
+                            <input class="form-control to-empty" id="snp" name="snp"
+                                   placeholder="Input SNP">
                         </div>
                     </div>
                     <div class="form-group">
@@ -139,25 +155,17 @@
                                    placeholder="Input Sort number">
                         </div>
                     </div>
-                    <div class="form-row mt-3 pt-3">
-<%--                        <div class="form-group">--%>
-                            <div class="col" >
-                                <a role="button"  id="buttonLinkToOperation" class="btn btn-outline-primary" href="#" onclick=generateLinkToPart()>Part List</a>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-9">
+                                <span id="errorMessage"></span>
                             </div>
-
-<%--                        </div>--%>
-<%--                        <div class="form-group">--%>
-<%--                            <div class="row">--%>
-<%--                                <div class="col-9">--%>
-<%--                                    <span id="errorMessage"></span>--%>
-<%--                                </div>--%>
-                                <div class="col<%---xs-offset-3 col-xs-9--%>">
-                                    <button class="btn btn-primary toBeEmpty float-right enter-pressed" type="button" onclick="enterPress()">
-                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                    </button>
-                                </div>
-<%--                            </div>--%>
-<%--                        </div>--%>
+                            <div class="col<%---xs-offset-3 col-xs-9--%>">
+                                <button class="btn btn-primary toBeEmpty float-right enter-pressed" type="button" onclick="enterPress()">
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </sf:form>
             </div>

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -67,6 +68,7 @@ public class KitController {
         return kit;
     }
 
+//    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/ajax")
     public ResponseEntity<String> saveKit(@Valid Kit kit, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -82,13 +84,16 @@ public class KitController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+//    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "/ajax/{id}")
     @ResponseBody
-    public void deleteKit(@PathVariable Integer id) {
-        Kit kit = kitService.findKitById(id);
+    public ResponseEntity<String> deleteKit(@PathVariable Integer id) {
+        return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
+/*        Kit kit = kitService.findKitById(id);
         if (kit != null) {
             kitService.deleteKit(kit);
-        }
+        }*/
     }
 }
 

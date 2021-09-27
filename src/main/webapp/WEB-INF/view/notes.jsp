@@ -10,26 +10,29 @@
 
         <script>
 
+            ajaxUrl = "notes/ajax/";
+
+
             // General scripts
 
-            var table;
+/*            var table;
             var form;
             var reference;
             var ajaxUrl;
-            var referenceName;
+            var referenceName;*/
 
-            function renderDeleteBtn(data, type, row) {
+/*            function renderDeleteBtn(data, type, row) {
                 var id = row.id;
                 if (type == 'display') {
                     return '<a href="#" onclick="deleteRow(' + id + ', \'' + referenceName + '\');">' +
                         '<span class="glyphicon glyphicon-remove" style="color: darkred" aria-hidden="true"></span></a>';
                 }
-            }
+            }*/
 
-            function deleteRow(id, referenceName) {
+            /*function deleteRow(id, referenceName) {
                 bootbox.confirm({
                     title: "Delete " + reference,
-                    message: "Are you sure to delete " + reference + /*" " + referenceName +*/ "?\nAction is irreversible.",
+                    message: "Are you sure to delete " + reference + /!*" " + referenceName +*!/ "?\nAction is irreversible.",
                     callback: function (result) {
                         if (result === true) {
                             $.ajax({
@@ -45,16 +48,16 @@
                         }
                     }
                 });
-            }
+            }*/
 
-            function renderEditBtn(data, type, row) {
+/*            function renderEditBtn(data, type, row) {
                 if (type == 'display') {
                     return '<a href="#" onclick="openModalEdit(' + row.id + ', \'' + "edit" + '\');">' +
                         '<span class="glyphicon glyphicon-pencil" style="color: blue" aria-hidden="true"></span></a>';
                 }
-            }
+            }*/
 
-            function openModalEdit(id) {
+            /*function openModalEdit(id) {
                 clearForm();
                 document.getElementById("modalTitle").innerHTML = id === "create" ? "New " + reference : "Edit " + reference;
                 $.get(ajaxUrl + id, function (data) {
@@ -101,20 +104,20 @@
                     .fail(function() {
                         bootbox.alert("Something wrong")
                     });
-            }
+            }*/
 
-            function makeEditable() {
+/*            function makeEditable() {
                 form = $('#detailsForm');
-            }
+            }*/
 
-            function clearForm() {
+/*            function clearForm() {
                 var elements = document.getElementsByClassName("to-empty");
                 for (var ii=0; ii < elements.length; ii++) {
                     elements[ii].value = "";
                 }
-            }
+            }*/
 
-            $(document).ready(function() {
+/*            $(document).ready(function() {
                 $(window).keydown(function(event){
                     if(event.keyCode == 13) {
                         // $('#submit').focus();
@@ -125,9 +128,9 @@
                         }
                     }
                 });
-            });
+            });*/
 
-            function save() {
+/*            function save() {
                 error = "";
                 $.ajax({
                     type: "POST",
@@ -147,6 +150,10 @@
                         }
                     }
                 });
+            }*/
+
+            function enterPress() {
+                updateTable();
             }
 
             function updateTable() {
@@ -159,25 +166,23 @@
                     success: updateTableByData,
                     error: showErrorModal
                 });
-
             }
+
+            function updateTableByData(data) {
+                table.clear().rows.add(data).draw();
+                $('#waitingModal').modal('hide');
+            }
+
 
             // End of general scripts
 
             function formatDate(date) {
                 var options = {year: 'numeric', month: 'numeric', day: 'numeric', timezone: 'UTC', hour: 'numeric', minute: 'numeric'};
-/*                var year = date.year;
-                var month = date.monthValue - 1;
-                var day = date.dayOfMonth;
-                var hour = date.hour;
-                var min = date.minute;*/
-
                 var year = date[0];
                 var month = date[1];
                 var day = date[2];
                 var hour = date[3];
                 var min = date[4];
-
                 var dateTime = new Date(year, month, day, hour, min);
                 var renderDateTime = dateTime.toLocaleDateString("ru", options);
                 return renderDateTime;
@@ -190,30 +195,11 @@
                 return data;
             }
 
-            ajaxUrl = "notes/ajax/";
 
-/*            function updateTable() {
-                $('#sendFilter').modal('hide');
-                $('#waitingModal').modal('show');
-                $.ajax({
-                    type: "POST",
-                    url: ajaxUrl + "filter",
-                    data: $('#filter').serialize(),
-                    success: updateTableByData,
-                    error: showErrorModal
-                });
-
-            }*/
-
-            function updateTableByData(data) {
-                table.clear().rows.add(data).draw();
-                $('#waitingModal').modal('hide');
-            }
-
-            function showErrorModal() {
+/*            function showErrorModal() {
                 $('#waitingModal').modal('hide');
                 $('#errorModal').modal('show');
-            }
+            }*/
 
             function clearFilter() {
 
@@ -276,29 +262,6 @@
                         }
                     ]
                 });
-                /*var startDate = $('#startDate');
-                var endDate = $('#endDate');
-                startDate.datetimepicker({
-                    timepicker: false,
-                    format: 'Y-m-d',
-                    formatDate: 'Y-m-d',
-                    onShow: function (ct) {
-                        this.setOptions({
-                            maxDate: endDate.val() ? endDate.val() : false
-                        })
-                    }
-                });
-                endDate.datetimepicker({
-                    timepicker: false,
-                    format: 'Y-m-d',
-                    formatDate: 'Y-m-d',
-                    onShow: function (ct) {
-                        this.setOptions({
-                            minDate: startDate.val() ? startDate.val() : false
-                        })
-                    }
-                });*/
-
             });
 
             jQuery.extend( jQuery.fn.dataTableExt.oSort, {
@@ -419,7 +382,7 @@
                                     <label class="form-check-label" for="A080">A080</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" name="A090" id="A090" value="A090">
+                                    <input class="form-check-input" type="checkbox" name="A090" id="A090" value="A090" checked>
                                     <label class="form-check-label" for="A090">A090</label>
                                 </div>
                             </div>
@@ -440,7 +403,7 @@
 
                             </div>
                             <div class="form-group">
-                                <button class="btn btn-primary float-right" onclick="updateTable()" type="button">
+                                <button class="btn btn-primary float-right" onclick="enterPress()" type="button">
                                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                                 </button>
                             </div>

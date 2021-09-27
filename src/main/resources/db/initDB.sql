@@ -75,5 +75,49 @@ CREATE TABLE matching224
 /*INSERT INTO properties (propName, propValue)
 VALUES ('weeklyEdiDir', 'C:\Shared\10. IT\02.EDI\Weekly');*/
 
-INSERT INTO properties (propName, propValue)
-VALUES ('dailyEdiDir', 'C:\Shared\10. IT\02.EDI\Daily');
+/*INSERT INTO properties (propName, propValue)
+VALUES ('dailyEdiDir', 'C:\Shared\10. IT\02.EDI\Daily');*/
+
+/*CREATE TABLE kits_finish_parts
+(
+    kits_id          kits_id          INTEGER NOT NULL,
+    finish_parts_id  INTEGER NOT NULL,
+    PRIMARY KEY (kits_id, finish_parts_id),
+    CONSTRAINT fk_variants_finish_parts_1 FOREIGN KEY (kits_id) REFERENCES kits (id),
+    CONSTRAINT fk_variants_finish_parts_2 FOREIGN KEY (finish_parts_id) REFERENCES finishParts (id)
+);*/
+
+
+
+/*DROP TABLE IF EXISTS parts CASCADE;
+
+CREATE TABLE parts
+(
+    id                      SERIAL PRIMARY KEY,
+    partNumber              VARCHAR UNIQUE NOT NULL,
+    sortNum                 INTEGER NOT NULL,
+    partType                VARCHAR NOT NULL,
+    snp                     INTEGER NOT NULL
+);*/
+
+/*
+CREATE TABLE part_qty
+(
+    part_id          INTEGER NOT NULL,
+    finishPart_id    INTEGER NOT NULL,
+    qty              INTEGER,
+    PRIMARY KEY (part_id, finishPart_id),
+    FOREIGN KEY (part_id) REFERENCES parts (id),
+    FOREIGN KEY (finishPart_id) REFERENCES finishParts (id)
+
+);*/
+
+INSERT INTO part_qty VALUES
+(
+    1, 1, 5
+);
+
+INSERT INTO part_qty VALUES
+(
+    2, 1, 3
+)

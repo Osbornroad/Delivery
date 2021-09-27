@@ -24,6 +24,7 @@
   <context-param>
     <param-name>spring.profiles.default</param-name>
     <param-value>remote</param-value>
+<!--    <param-value>local</param-value>-->
   </context-param>
 
   <!-- Spring MVC -->

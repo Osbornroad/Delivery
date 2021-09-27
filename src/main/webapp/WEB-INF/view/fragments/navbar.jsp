@@ -42,16 +42,11 @@
         });
     }
 
-    // setInterval(updateDate, 60000);
-
 </script>
 
 <nav class="navbar fixed-top navbar-expand-sm bg-primary navbar-dark">
     <a class="navbar-brand" href="<c:url value="/"/>">SANOH</a>
-<%--
-            <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>--%>
+
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li class="nav-item dropdown">
@@ -68,7 +63,15 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="<c:url value="/finishParts"/>">Finish parts</a>
                         <a class="dropdown-item" href="<c:url value="/kits"/>">Kits</a>
+                        <a class="dropdown-item" href="<c:url value="/parts"/>">Parts</a>
                     </div>
+                </li>
+<%--                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="loader" data-toggle="dropdown">Loader</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="<c:url value="/parts/load"/>">Parts loader</a>
+                    </div>
+                </li>--%>
             </ul >
             <span class="navbar-text pl-5" id="baseUpdatedLabel">
                     Base updated:
@@ -86,7 +89,6 @@
                                     <form:form action="${pageContext.request.contextPath}/logout" class="mb-0" method="POST">
                                         <input type="submit" class="btn btn-link nav-item nav-link pl-1" value="Logout" />
                                     </form:form>
-<%--                                    <a href="<c:url value="/logout" />" class="nav-item nav-link ml-1 pl-0">Logout</a>--%>
                                 </sec:authorize>
                             </c:otherwise>
                         </c:choose>

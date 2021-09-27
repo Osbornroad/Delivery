@@ -48,6 +48,9 @@ public class LoaderEDI {
             case ("фев"):
                 intMonth = 2;
                 break;
+            case ("март"):
+                intMonth = 3;
+                break;
         }
 
         return intMonth;

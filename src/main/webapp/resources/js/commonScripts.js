@@ -4,6 +4,55 @@ var reference;
 var ajaxUrl;
 var referenceName;
 
+// Every time a modal is shown, if it has an autofocus element, focus on it.
+$(document).ready(function() {
+    $('.modal').on('shown.bs.modal', function () {
+        $(this).find('[autofocus]').focus();
+    });
+});
+
+$(function () {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+});
+
+var tableToExcel = (function() {
+    var uri = 'data:application/vnd.ms-excel;base64,'
+        , template = '<html xmlns="http://www.w3.org/TR/REC-html40"><head><meta http-equiv="content-type" content="text/plain; charset=UTF-8"/></head><body><table>{table}</table></body></html>'
+        , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+        , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+    return function(table, name) {
+        if (!table.nodeType) table = document.getElementById(table)
+        var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+        window.location.href = uri + base64(format(template, ctx))
+    }
+})()
+
+$(document).ready(function() {
+    $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+            // $('#submit').focus();
+            var focused = document.activeElement;
+            if ($(focused).hasClass("enter-pressed")) {
+            } else {
+                event.preventDefault();
+                enterPress();
+            }
+        }
+    });
+});
+
+function showErrorModal() {
+    $('#waitingModal').modal('hide');
+    $('#errorModal').modal('show');
+    // window.location.href = "/";
+    // window.location.href("${pageContext.request.contextPath}/")
+    // window.location.replace("${pageContext.request.contextPath}/resources/images/details_open.png");
+}
+
 function renderDeleteBtn(data, type, row) {
     var id = row.id;
     if (type == 'display') {
@@ -100,19 +149,6 @@ function clearForm() {
     }
 }
 
-$(document).ready(function() {
-    $(window).keydown(function(event){
-        if(event.keyCode == 13) {
-            // $('#submit').focus();
-            var focused = document.activeElement;
-            if ($(focused).hasClass("enter-pressed")) {
-            } else {
-                event.preventDefault();
-            }
-        }
-    });
-});
-
 function save() {
     error = "";
     $.ajax({
@@ -134,20 +170,3 @@ function save() {
         }
     });
 }
-
-function updateTable() {
-    $('#sendFilter').modal('hide');
-    $('#waitingModal').modal('show');
-    $.ajax({
-        type: "POST",
-        url: ajaxUrl + "filter",
-        data: $('#filter').serialize(),
-        success: updateTableByData,
-        error: showErrorModal
-    });
-
-}
-
-
-
-

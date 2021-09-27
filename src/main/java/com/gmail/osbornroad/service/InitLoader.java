@@ -2,6 +2,7 @@ package com.gmail.osbornroad.service;
 
 import com.gmail.osbornroad.model.FinishPart;
 import com.gmail.osbornroad.model.Note;
+import com.gmail.osbornroad.model.Part;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -24,7 +25,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-//@Service
+@Service
 //@EnableScheduling
 public class InitLoader {
 
@@ -75,6 +76,37 @@ public class InitLoader {
         }
         return map;
     }*/
+
+    @Autowired
+    PartService partService;
+
+    public void partLoading() {
+        Workbook workbook;
+        try(InputStream inputStream = InitLoader.class.getResourceAsStream("/xlsx/partnumbers.xlsx")) {
+            workbook = new XSSFWorkbook(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        Sheet sheet = workbook.getSheetAt(0);
+        int order = 0;
+        for(Row row : sheet) {
+            if (order == 0) {
+                order += 100;
+                continue;
+            }
+            Cell partNumberCell = row.getCell(0);
+            String partNumber = partNumberCell.getRichStringCellValue().getString();
+            Cell partTypeCell = row.getCell(1);
+            String partType = partTypeCell.getRichStringCellValue().getString();
+            Cell snpCell = row.getCell(2);
+            int snp = (int)snpCell.getNumericCellValue();
+            Part part = new Part(partNumber, order, partType, snp);
+            partService.savePart(part);
+
+            order += 100;
+        }
+    }
 
    /* @Autowired
     FinishPartService finishPartService;*/

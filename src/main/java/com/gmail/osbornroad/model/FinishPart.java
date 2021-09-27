@@ -18,7 +18,24 @@ public class FinishPart extends BaseEntity{
 
     private Integer sortNum;
 
+    private Set<PartQty> partQtySet = new HashSet<>();
+
     public FinishPart() {
+    }
+
+    public FinishPart(@NotEmpty String finishPartNumber, Set<Kit> kitSet, Integer sortNum, Set<PartQty> partQtySet) {
+        this.finishPartNumber = finishPartNumber;
+        this.kitSet = kitSet;
+        this.sortNum = sortNum;
+        this.partQtySet = partQtySet;
+    }
+
+    public FinishPart(Integer id, @NotEmpty String finishPartNumber, Set<Kit> kitSet, Integer sortNum, Set<PartQty> partQtySet) {
+        super(id);
+        this.finishPartNumber = finishPartNumber;
+        this.kitSet = kitSet;
+        this.sortNum = sortNum;
+        this.partQtySet = partQtySet;
     }
 
     public FinishPart(@NotEmpty String finishPartNumber, Set<Kit> kitSet, Integer sortNum) {
@@ -47,6 +64,15 @@ public class FinishPart extends BaseEntity{
 
     public FinishPart(@NotEmpty String finishPartNumber) {
         this.finishPartNumber = finishPartNumber;
+    }
+
+    @OneToMany(mappedBy = "finishPart", fetch = FetchType.EAGER)
+    public Set<PartQty> getPartQtySet() {
+        return partQtySet;
+    }
+
+    public void setPartQtySet(Set<PartQty> partQtySet) {
+        this.partQtySet = partQtySet;
     }
 
     @Column(name = "finishPartNumber")
@@ -90,7 +116,8 @@ public class FinishPart extends BaseEntity{
         if (finishPartNumber != null ? !finishPartNumber.equals(that.finishPartNumber) : that.finishPartNumber != null)
             return false;
         if (kitSet != null ? !kitSet.equals(that.kitSet) : that.kitSet != null) return false;
-        return sortNum != null ? sortNum.equals(that.sortNum) : that.sortNum == null;
+        if (sortNum != null ? !sortNum.equals(that.sortNum) : that.sortNum != null) return false;
+        return partQtySet != null ? partQtySet.equals(that.partQtySet) : that.partQtySet == null;
     }
 
     @Override
@@ -98,6 +125,7 @@ public class FinishPart extends BaseEntity{
         int result = finishPartNumber != null ? finishPartNumber.hashCode() : 0;
         result = 31 * result + (kitSet != null ? kitSet.hashCode() : 0);
         result = 31 * result + (sortNum != null ? sortNum.hashCode() : 0);
+        result = 31 * result + (partQtySet != null ? partQtySet.hashCode() : 0);
         return result;
     }
 }
