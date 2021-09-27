@@ -68,7 +68,7 @@ public class KitController {
         return kit;
     }
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/ajax")
     public ResponseEntity<String> saveKit(@Valid Kit kit, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -84,7 +84,7 @@ public class KitController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "/ajax/{id}")
     @ResponseBody
     public ResponseEntity<String> deleteKit(@PathVariable Integer id) {

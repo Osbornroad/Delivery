@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,7 @@ public class PartController {
     @Autowired
     ValidationUtil validationUtil;
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/ajax")
     public ResponseEntity<String> savePart(@Valid Part part, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -46,6 +48,7 @@ public class PartController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "/ajax/{id}")
     @ResponseBody
     public ResponseEntity<String> deletePart(@PathVariable Integer id) {

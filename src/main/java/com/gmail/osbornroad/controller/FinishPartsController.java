@@ -25,7 +25,7 @@ public class FinishPartsController {
     @Autowired
     ValidationUtil validationUtil;
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/ajax")
     public ResponseEntity<String> saveFinishPart(@Valid FinishPart finishPart, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -46,7 +46,7 @@ public class FinishPartsController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "/ajax/{id}")
     @ResponseBody
     public ResponseEntity<String> deleteFinishPart(@PathVariable Integer id) {

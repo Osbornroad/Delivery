@@ -42,7 +42,7 @@ public class FinishPartController {
     @Autowired
     ValidationUtil validationUtil;
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @PostMapping(value = "/ajax")
     public ResponseEntity<String> savePartQty(@Valid PartQtyDTO partQtyDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -56,7 +56,7 @@ public class FinishPartController {
             return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @Secured("ROLE_ADMIN")
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(value = "/ajax/{partId}")
     @ResponseBody
     public ResponseEntity<String> deletePartQty(
