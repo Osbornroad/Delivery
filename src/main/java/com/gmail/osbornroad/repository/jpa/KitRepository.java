@@ -22,4 +22,6 @@ public interface KitRepository extends JpaRepository<Kit, Integer> {
     List <String> getUsedWib224();
 
     Kit findKitByKitName(String kitName);
+
+
 }

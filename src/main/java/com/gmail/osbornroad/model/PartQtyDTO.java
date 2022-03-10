@@ -11,18 +11,18 @@ public class PartQtyDTO implements Serializable {
 
     private String partNumber;
 
-    private Integer qty;
+    private double qty;
 
     public PartQtyDTO() {
     }
 
-    public PartQtyDTO(Integer partId, Integer finishPartId, Integer qty) {
+    public PartQtyDTO(Integer partId, Integer finishPartId, double qty) {
         this.partId = partId;
         this.finishPartId = finishPartId;
         this.qty = qty;
     }
 
-    public PartQtyDTO(Integer partId, Integer finishPartId, String partNumber, Integer qty) {
+    public PartQtyDTO(Integer partId, Integer finishPartId, String partNumber, double qty) {
         this.partId = partId;
         this.finishPartId = finishPartId;
         this.partNumber = partNumber;
@@ -45,11 +45,11 @@ public class PartQtyDTO implements Serializable {
         this.finishPartId = finishPartId;
     }
 
-    public Integer getQty() {
+    public double getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(double qty) {
         this.qty = qty;
     }
 

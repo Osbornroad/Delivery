@@ -32,7 +32,7 @@ public class PartQtyService {
         int partId = partQty.getPart().getId();
         int finishPartId = partQty.getFinishPart().getId();
         String partNumber = partQty.getPart().getPartNumber();
-        int qty = partQty.getQty();
+        double qty = partQty.getQty();
         PartQtyDTO dto = new PartQtyDTO(partId, finishPartId, partNumber, qty);
         return dto;
     }

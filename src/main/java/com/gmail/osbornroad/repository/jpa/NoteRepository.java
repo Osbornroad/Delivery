@@ -1,6 +1,7 @@
 package com.gmail.osbornroad.repository.jpa;
 
 import com.gmail.osbornroad.model.Note;
+import com.gmail.osbornroad.model.Shipping;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -21,12 +22,17 @@ public interface NoteRepository extends JpaRepository<Note, Integer> {
 
     Note findTopByOrderByIdDesc();
 
+    Note findByFieldKey(Integer fieldKey);
+
+//    List<Note> findFirst1000ByIdIsAfterAndAPointOrderById(Integer id, String APoint);
 
     @Query("SELECT n FROM Note n WHERE n.APoint IN (:aPoints) AND  n.APointDateTime BETWEEN :startDate AND :endDate ORDER BY n.APointDateTime DESC")
     List<Note> getBetweenDates(@Param("aPoints") List<String> aPoints,
                                @Param("startDate") LocalDateTime startDate,
                                @Param("endDate") LocalDateTime endDate);
 
+
+    List<Note> findByIdLessThanAndAPointOrderById(Integer id, String APoint);
 
 //    @Query("SELECT MAX(n.sequence) FROM Note n GROUP BY n.series")
     @Query("SELECT DISTINCT n.series FROM Note n ORDER BY n.series ASC")

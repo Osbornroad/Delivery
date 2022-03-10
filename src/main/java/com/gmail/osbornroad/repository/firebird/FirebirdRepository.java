@@ -1,6 +1,8 @@
 package com.gmail.osbornroad.repository.firebird;
 
 import com.gmail.osbornroad.model.Note;
+import com.gmail.osbornroad.model.Shipping;
+import com.gmail.osbornroad.service.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -19,6 +22,10 @@ public class FirebirdRepository{
 
     @Autowired
     private JdbcTemplate fireBirdJdbcTemplate;
+
+
+//    @Autowired
+    NoteService noteService = new NoteService();
 
     Timestamp defaultDate = Timestamp.valueOf(LocalDateTime.of(2000,01,01, 00, 00));
 
@@ -34,9 +41,40 @@ public class FirebirdRepository{
         return lastFieldKey;
     }
 
+
+    public Shipping getNextUnsavedShipping(int lastSavedId) {
+        int nextId = lastSavedId + 1;
+        try {
+            return fireBirdJdbcTemplate.queryForObject("SELECT FIELD_KEY, FK_DELIVERY, DATE_TIME FROM BD_SHIPPING WHERE FIELD_KEY = " + nextId, new RowMapper<Shipping>() {
+                @Override
+                public Shipping mapRow(ResultSet resultSet, int i) throws SQLException {
+                    Shipping shipping = new Shipping();
+
+                    int fkDelivery = resultSet.getInt("FK_DELIVERY");
+                    int noteId = noteService.getNoteId(fkDelivery);
+                    shipping.setNoteId(noteId);
+
+                    LocalDateTime dateTime = resultSet.getTimestamp("DATE_TIME").toLocalDateTime();
+                    shipping.setDateTime(dateTime);
+
+                    Integer fkShipping = resultSet.getInt("FIELD_KEY");
+                    shipping.setFkShipping(fkShipping);
+
+                    return shipping;
+                }
+            });
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+//    select field_key, fk_delivery, date_time from bd_shipping
+//    where field_key > 48 and field_key < 100;
+
     public Note getNoteFromFireBird(int id) {
         try {
-            return fireBirdJdbcTemplate.queryForObject("SELECT FIELD_KEY, APOINT, SEQUESNCE_DATE, SEQUESNCE_NUM, MODELVARIANT, SERIES, NUMBER, PLANNED, TCWI225, TCWI129, APOINT_DT FROM BD_DELIVERY WHERE FIELD_KEY = " + id, new RowMapper<Note>() {
+            return fireBirdJdbcTemplate.queryForObject("SELECT FIELD_KEY, APOINT, SEQUESNCE_DATE, SEQUESNCE_NUM, MODELVARIANT," +
+                    " SERIES, NUMBER, PLANNED, TCWI225, TCWI129, APOINT_DT FROM BD_DELIVERY WHERE FIELD_KEY = " + id, new RowMapper<Note>() {
                 @Override
                 public Note mapRow(ResultSet resultSet, int i) throws SQLException {
 

@@ -3,6 +3,10 @@ package com.gmail.osbornroad.service;
 import com.gmail.osbornroad.model.FinishPart;
 import com.gmail.osbornroad.model.Note;
 import com.gmail.osbornroad.model.Part;
+import com.gmail.osbornroad.model.Shipping;
+import com.gmail.osbornroad.repository.firebird.FirebirdRepository;
+import com.gmail.osbornroad.repository.jpa.NoteRepository;
+import com.gmail.osbornroad.repository.jpa.ShippingRepository;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -28,6 +32,38 @@ import java.util.zip.ZipFile;
 @Service
 //@EnableScheduling
 public class InitLoader {
+
+    @Autowired
+    NoteRepository noteRepository;
+
+    @Autowired
+    ShippingService shippingService;
+
+    @Autowired
+    FirebirdService firebirdService;
+
+    public void nissanBaseShippingLoading() {
+/*
+        List<Note> nissanBaseShipping = noteRepository.findByIdLessThanAndAPointOrderById(60036, "A090");
+        for(Note note : nissanBaseShipping) {
+            Shipping shipping = new Shipping(note.getId(), note.getAPointDateTime(), null);
+            shippingService.saveShipping(shipping);
+        }*/
+    }
+
+    public void sanohBaseShippingLoading() {
+
+        while(true) {
+            Shipping lastShipping = shippingService.getLastSavedShipping();
+            int lastSavedId = lastShipping.getFkShipping();
+            if (lastSavedId == 0)
+                lastSavedId = 48;
+            Shipping nextShipping = firebirdService.getNextUnsavedShipping(lastSavedId);
+            shippingService.saveShipping(nextShipping);
+            if (lastShipping.getFkShipping() == 200)
+                break;
+        }
+    }
 
 /*
     @Autowired
@@ -77,7 +113,7 @@ public class InitLoader {
         return map;
     }*/
 
-    @Autowired
+/*    @Autowired
     PartService partService;
 
     public void partLoading() {
@@ -106,7 +142,7 @@ public class InitLoader {
 
             order += 100;
         }
-    }
+    }*/
 
    /* @Autowired
     FinishPartService finishPartService;*/

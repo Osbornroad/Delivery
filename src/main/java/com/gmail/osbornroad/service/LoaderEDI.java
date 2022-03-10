@@ -5,14 +5,18 @@ import com.gmail.osbornroad.repository.jpa.FinishPartRepository;
 import com.gmail.osbornroad.repository.jpa.PropRepository;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -51,25 +55,292 @@ public class LoaderEDI {
             case ("мар"):
                 intMonth = 3;
                 break;
+            case ("апр"):
+                intMonth = 4;
+                break;
+            case ("май"):
+                intMonth = 5;
+                break;
+            case ("июн"):
+                intMonth = 6;
+                break;
+            case ("июл"):
+                intMonth = 7;
+                break;
         }
 
         return intMonth;
+    }
+
+    public List<UnitEDI> getEdiFilteredByDate (LocalDate start, LocalDate finish, String ediDir) {
+
+        File file = getFile(null, ediDir);
+        List<UnitEDI> unitEDIList = getEDIfromCSV(file);
+        List<UnitEDI> filteredUnitEDIList = new ArrayList<>();
+        LocalDate startOfEDI = finish;
+        LocalDate finishOfEDI = start;
+
+        for (UnitEDI unitEDI : unitEDIList) {
+            if (unitEDI.getDate().isEqual(start) || unitEDI.getDate().isEqual(finish) || (unitEDI.getDate().isAfter(start) && unitEDI.getDate().isBefore(finish))) {
+                boolean isAdded = false;
+                for (UnitEDI savedUnitEDI : filteredUnitEDIList) {
+                    if(savedUnitEDI.getPartNumber().equals(unitEDI.getPartNumber())) {
+                        savedUnitEDI.setQuantity(savedUnitEDI.getQuantity() + unitEDI.getQuantity());
+                        isAdded = true;
+                    }
+                }
+                if(!isAdded) {
+                    filteredUnitEDIList.add(unitEDI);
+                }
+                if(unitEDI.getDate().isBefore(startOfEDI))
+                    startOfEDI = unitEDI.getDate();
+                if(unitEDI.getDate().isAfter(finishOfEDI))
+                    finishOfEDI = unitEDI.getDate();
+            }
+        }
+        //Go to end of week
+        finishOfEDI = finishOfEDI.plusDays(6);
+
+        //Get month forecast based on weekly EDI
+        float multiplier = (float)getWorkingDaysInMonth(start) / (float)getWorkingDaysBetweenDates(startOfEDI, finishOfEDI);
+
+        for (UnitEDI unitEDI : filteredUnitEDIList) {
+            int qty = unitEDI.getQuantity();
+            unitEDI.setQuantity((int)(qty * multiplier));
+        }
+
+        return filteredUnitEDIList;
+    }
+
+//    String PATH_TO_ORDER = "C:\\Shared\\10. IT\\03.Order\\Order.xlsx";
+
+    public List<OrderCheck> getOrderCheckList(String fileOrderPath, LocalDate startDate, LocalDate endDate) {
+
+        String ediDir = "weeklyEdiDir";
+        List<UnitEDI> unitEDIList = getEdiFilteredByDate(startDate, endDate, ediDir);
+        Map<Part, Double>  necessaryOrder = getNecessaryPartsOrder(unitEDIList);
+        Map<Part, Integer> necessaryOrderBySnp = getNecessaryPartsOrderBySnp(necessaryOrder);
+        Map<String, Integer> factOrder =
+                orderLoading((fileOrderPath == null || fileOrderPath.equals("")) ? propService.getPropValueByName("orderDir") : fileOrderPath);
+
+        List<OrderCheck> orderCheckList = new ArrayList<>();
+        for (Map.Entry<Part, Integer> entry : necessaryOrderBySnp.entrySet()) {
+            OrderCheck orderCheck = new OrderCheck(entry.getKey().getPartNumber(), entry.getValue(), 0, 0);
+            orderCheckList.add(orderCheck);
+        }
+        for (Map.Entry<String, Integer> factEntry : factOrder.entrySet()) {
+            boolean isRecorded = false;
+            for (OrderCheck orderCheck : orderCheckList) {
+                if (isPartNumbersEqual(orderCheck.getPartNumber(), factEntry.getKey())) {
+                    orderCheck.setOrdered(factEntry.getValue());
+                    orderCheck.setDiff(orderCheck.getOrdered() - orderCheck.getNecessaryAmount());
+                    isRecorded = true;
+                    break;
+                }
+            }
+            if (!isRecorded) {
+                OrderCheck orderCheck = new OrderCheck(factEntry.getKey(), 0, 0, 0);
+                orderCheckList.add(orderCheck);
+            }
+        }
+
+        return orderCheckList;
+    }
+
+/*    public String[][] getOrderCheck(String fileOrderPath, LocalDate startDate, LocalDate endDate) {
+
+        String ediDir = "weeklyEdiDir";
+        List<UnitEDI> unitEDIList = getEdiFilteredByDate(startDate, endDate, ediDir);
+        Map<String, Double>  necessaryOrder = getNecessaryPartsOrder(unitEDIList);
+        Map<String, Integer> necessaryOrderBySnp = getNecessaryPartsOrderBySnp(necessaryOrder);
+        Map<String, Integer> factOrder =
+                orderLoading((fileOrderPath == null || fileOrderPath.equals("")) ? propService.getPropValueByName("orderDir") : fileOrderPath);
+
+        boolean isNecMapSmaller = necessaryOrderBySnp.size() < factOrder.size();
+        int rows = isNecMapSmaller ? factOrder.size() : necessaryOrderBySnp.size();
+        String[][] orderCheck = new String[rows + 1][4];
+        orderCheck[0][0] = "Part number";
+        orderCheck[0][1] = "Necessary amount";
+        orderCheck[0][2] = "Ordered";
+        orderCheck[0][3] = "Difference";
+        if (isNecMapSmaller) {
+            int counter = 1;
+            for (Map.Entry<String, Integer> entry : necessaryOrderBySnp.entrySet()) {
+                orderCheck[counter][0] = entry.getKey();
+                orderCheck[counter][1] = entry.getValue().toString();
+                orderCheck[counter][2] = "n/a";
+                orderCheck[counter][3] = "n/a";
+                counter++;
+            }
+            int factCounter = necessaryOrderBySnp.size() + 1;
+            Map<String, Integer> error = new HashMap<>();
+            for (Map.Entry<String, Integer> entry : factOrder.entrySet()) {
+                String factPartNumber = entry.getKey();
+                *//*if (factPartNumber.length() == 10) {
+                    factPartNumber = factPartNumber.substring(0, 5) + "-" + factPartNumber.substring(5);
+                }
+                if (factPartNumber.substring(0, 5).equals("17507")) {
+                    factPartNumber = factPartNumber.substring(0, 5) + "-"
+                            + factPartNumber.substring(5, 10) + "-" + factPartNumber.substring(10);
+                }*//*
+                boolean isRecorded = false;
+                for(int i = 1; i < orderCheck.length; i++) {
+                    if (orderCheck[i][0] == null)
+                        continue;
+//                    if (orderCheck[i][0].equals(factPartNumber)) {
+                    if (isPartNumbersEqual(orderCheck[i][0], factPartNumber)) {
+                        int nesQty = Integer.parseInt(orderCheck[i][1]);
+                        orderCheck[i][2] = entry.getValue().toString();
+                        orderCheck[i][3] = String.valueOf(entry.getValue() - nesQty);
+                        isRecorded = true;
+                        break;
+                    }
+                }
+                try {
+                    if (!isRecorded) {
+                        orderCheck[factCounter][0] = entry.getKey();
+                        orderCheck[factCounter][1] = "n/a";
+                        orderCheck[factCounter][2] = entry.getValue().toString();
+                        orderCheck[factCounter][3] = "n/a";
+                        factCounter++;
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    error.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+        return orderCheck;
+    }*/
+
+    private boolean isPartNumbersEqual(String basePartNumber, String orderPartNumber) {
+        if (basePartNumber == null || orderPartNumber == null)
+            return false;
+        basePartNumber = basePartNumber.replaceAll("\\s+","");
+        orderPartNumber = orderPartNumber.replaceAll("\\s+","");
+        basePartNumber = basePartNumber.replaceAll("-","");
+        orderPartNumber = orderPartNumber.replaceAll("-","");
+        return basePartNumber.equals(orderPartNumber);
+    }
+
+//    private String getStringWithoutSpacesAndDashes(String )
+
+    private Map<String, Integer> orderLoading(String stringPath) {
+        File file = null;
+        try {
+            file = Objects.requireNonNull(findLastModifiedFile(stringPath)).toFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Workbook workbook;
+        Map<String, Integer> map = new HashMap<>();
+        try(InputStream inputStream = new FileInputStream(file)) {
+            workbook = new XSSFWorkbook(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        Sheet sheet = workbook.getSheetAt(0);
+        for(Row row : sheet) {
+            Cell partNumberCell = row.getCell(0);
+            String partNumber = partNumberCell.getRichStringCellValue().getString();
+
+            Cell qtyCell = row.getCell(1);
+            int qty = (int)qtyCell.getNumericCellValue();
+
+            map.put(partNumber, qty);
+        }
+        return map;
+    }
+
+    @Autowired
+    PartService partService;
+
+    public Map<Part, Integer> getNecessaryPartsOrderBySnp(Map<Part, Double> map) {
+        Map<Part, Integer> mapBySnp = new HashMap<>();
+        for (Map.Entry<Part, Double> entry : map.entrySet()) {
+            Part part = entry.getKey();
+//            Part part = partService.findPartByNumber(entry.getKey());
+            int boxes = (int)(double) entry.getValue() / part.getSnp() + 1;
+            int qty = boxes * part.getSnp();
+            mapBySnp.put(entry.getKey(), qty);
+        }
+        return mapBySnp;
+    }
+
+    public Map<Part, Double> getNecessaryPartsOrder(List<UnitEDI> unitEDIList ) {
+        Map<Part, Double> partMap = new HashMap<>();
+        for (UnitEDI unitEDI : unitEDIList) {
+            FinishPart finishPart = finishPartRepository.findByFinishPartNumber(unitEDI.getPartNumber()).orElse(null);
+            if(finishPart == null)
+                continue;
+            int finishPartQty = unitEDI.getQuantity();
+            Set<PartQty> partQtySet = finishPart.getPartQtySet();
+            for(PartQty partQty : partQtySet) {
+                Part part = partQty.getPart();
+                double qty = partQty.getQty() * finishPartQty;
+                if(partMap.containsKey(part)) {
+                    partMap.put(part, partMap.get(part) + qty);
+                } else {
+                    partMap.put(part, qty);
+                }
+                /*for(Map.Entry<String, Integer> entry : partMap.entrySet()) {
+
+                }*/
+            }
+        }
+        return partMap;
+    }
+
+/*    public Map<String, Double> getNecessaryPartsOrder(List<UnitEDI> unitEDIList ) {
+        Map<String, Double> partMap = new HashMap<>();
+        for (UnitEDI unitEDI : unitEDIList) {
+            FinishPart finishPart = finishPartRepository.findByFinishPartNumber(unitEDI.getPartNumber()).orElse(null);
+            if(finishPart == null)
+                continue;
+            int finishPartQty = unitEDI.getQuantity();
+            Set<PartQty> partQtySet = finishPart.getPartQtySet();
+            for(PartQty partQty : partQtySet) {
+                String partNumber = partQty.getPart().getPartNumber();
+                double qty = partQty.getQty() * finishPartQty;
+                if(partMap.containsKey(partNumber)) {
+                    partMap.put(partNumber, partMap.get(partNumber) + qty);
+                } else {
+                    partMap.put(partNumber, qty);
+                }
+                *//*for(Map.Entry<String, Integer> entry : partMap.entrySet()) {
+
+                }*//*
+            }
+        }
+        return partMap;
+    }*/
+
+    public int getWorkingDaysInMonth(LocalDate date) {
+        LocalDate startOfMonth = date.withDayOfMonth(1);
+        LocalDate endOfMonth = date.withDayOfMonth(date.lengthOfMonth());
+        int workingDays = getWorkingDaysBetweenDates(startOfMonth, endOfMonth);
+        return workingDays;
+    }
+
+    public int getWorkingDaysBetweenDates(LocalDate start, LocalDate finish) {
+        int counter = 0;
+        if(start.isAfter(finish))
+            return 0;
+        while(true) {
+            if (!(start.getDayOfWeek() == DayOfWeek.SATURDAY || start.getDayOfWeek() == DayOfWeek.SUNDAY))
+                counter++;
+            if (start.isEqual(finish))
+                break;
+            start = start.plusDays(1);
+        }
+        return counter;
     }
 
     public String[][] getArrayOfEdi(File file, String ediDir) {
 
         int p = 55;
 
-        if(file == null) {
-            try {
-                Property weeklyEdiDir = propRepository.findByPropName(ediDir).orElse(null);
-                String propValue = weeklyEdiDir.getPropValue();
-                Path path = findLastModifiedEdi(propValue);
-                file = path.toFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        file = getFile(file, ediDir);
 
         List<UnitEDI> unitEDIList = getEDIfromCSV(file);
 
@@ -183,27 +454,27 @@ public class LoaderEDI {
         return report;
     }
 
-    public String[] getEdiProperties(File file, String ediDir) {
+    @Autowired
+    PropService propService;
 
-        int o = 78;
-
+    private File getFile(File file, String propName) {
         if(file == null) {
             try {
-                Property weeklyEdiDir = propRepository.findByPropName(ediDir).orElse(null);
-                String propValue = weeklyEdiDir.getPropValue();
-                Path path = findLastModifiedEdi(propValue);
+                String propValue = propService.getPropValueByName(propName);
+                Path path = findLastModifiedFile(propValue);
                 file = path.toFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            /*try {
-                Files.walkFileTree(Paths.get(String.valueOf(propRepository.findByPropName("weeklyEdiDir"))), new EdiFileVisitor());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            filePath = LAST_EDI;*/
         }
+        return file;
+    }
+
+    public String[] getEdiProperties(File file, String ediDir) {
+
+        int o = 78;
+
+        file = getFile(file, ediDir);
 
         String[] properties = new String[3];
 //        int counter = 0;
@@ -249,7 +520,7 @@ public class LoaderEDI {
 
 //    private static String LAST_EDI = "";
 
-    private Path findLastModifiedEdi(String sdir) throws IOException {
+    private Path findLastModifiedFile(String sdir) throws IOException {
         Path dir = Paths.get(sdir);
         if (Files.isDirectory(dir)) {
             Optional<Path> opPath = Files.list(dir)

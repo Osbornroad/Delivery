@@ -56,6 +56,7 @@
                         <a class="dropdown-item" href="<c:url value="/report"/>">Report</a>
                         <a class="dropdown-item" href="<c:url value="/notes"/>">Database</a>
                         <a class="dropdown-item" href="<c:url value="/edi"/>">EDI</a>
+                        <a class="dropdown-item" href="<c:url value="/orderCheck"/>">Order check</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">
@@ -66,10 +67,11 @@
                         <a class="dropdown-item" href="<c:url value="/parts"/>">Parts</a>
                     </div>
                 </li>
-<%--                <li class="nav-item dropdown">
+                <%--<li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="loader" data-toggle="dropdown">Loader</a>
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="<c:url value="/parts/load"/>">Parts loader</a>
+                        <a class="dropdown-item" href="<c:url value="/shipping"/>" disabled>Nissan shipping</a>
+                        <a class="dropdown-item" href="<c:url value="/shipping/sanoh"/>">Sanoh shipping</a>
                     </div>
                 </li>--%>
             </ul >

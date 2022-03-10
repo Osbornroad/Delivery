@@ -78,6 +78,11 @@ VALUES ('weeklyEdiDir', 'C:\Shared\10. IT\02.EDI\Weekly');*/
 /*INSERT INTO properties (propName, propValue)
 VALUES ('dailyEdiDir', 'C:\Shared\10. IT\02.EDI\Daily');*/
 
+/*INSERT INTO properties (propName, propValue)
+VALUES ('orderDir', 'C:\Shared\10. IT\03.Order');*/
+
+
+
 /*CREATE TABLE kits_finish_parts
 (
     kits_id          kits_id          INTEGER NOT NULL,
@@ -112,7 +117,7 @@ CREATE TABLE part_qty
 
 );*/
 
-INSERT INTO part_qty VALUES
+/*INSERT INTO part_qty VALUES
 (
     1, 1, 5
 );
@@ -120,4 +125,24 @@ INSERT INTO part_qty VALUES
 INSERT INTO part_qty VALUES
 (
     2, 1, 3
-)
+)*/
+
+/*ALTER TABLE part_qty ALTER COLUMN qty TYPE numeric;*/
+
+/*DROP TABLE shipping;
+
+CREATE TABLE shipping
+(
+    id                   SERIAL PRIMARY KEY,
+    noteId              INTEGER NOT NULL,
+    dateTime            TIMESTAMP NOT NULL,
+    userId               VARCHAR,
+    FOREIGN KEY (noteId) REFERENCES notes (id),
+    CONSTRAINT shippingUnique UNIQUE (noteId)
+);*/
+
+/*ALTER TABLE shipping ADD COLUMN fk_shipping INTEGER;*/
+
+/*UPDATE shipping SET fk_shipping = 0;*/
+
+/*ALTER TABLE shipping RENAME COLUMN fk_shipping TO fkShipping;*/

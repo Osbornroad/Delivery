@@ -78,7 +78,7 @@ public class Scheduler {
             BASE_UPDATED = LocalDateTime.now();*/
     }
 
-//        @Scheduled(fixedDelay = 60000)
+        @Scheduled(fixedDelay = 60000)
     public void scheduler() {
         notesTableFillingFromFireBird();
     }

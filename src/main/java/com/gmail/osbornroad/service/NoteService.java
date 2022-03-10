@@ -83,6 +83,12 @@ public class NoteService {
         return lastFieldKey;
     }
 
+    public int getNoteId(int fieldKey) {
+        Note note = noteRepository.findByFieldKey(fieldKey);
+        int id = note.getId();
+        return id;
+    }
+
     public List<String> getAllSeries() {
         return noteRepository.getAllSeries();
     }

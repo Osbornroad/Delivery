@@ -23,7 +23,7 @@ public class PartQty {
     @JoinColumn(name = "finishPart_id")
     FinishPart finishPart;
 
-    int qty;
+    double qty;
 
     public PartQty() {
     }
@@ -34,7 +34,7 @@ public class PartQty {
         this.finishPart = finishPart;
     }
 
-    public PartQty(PartQtyKey id, Part part, FinishPart finishPart, int qty) {
+    public PartQty(PartQtyKey id, Part part, FinishPart finishPart, double qty) {
         this.id = id;
         this.part = part;
         this.finishPart = finishPart;
@@ -65,11 +65,11 @@ public class PartQty {
         this.finishPart = finishPart;
     }
 
-    public int getQty() {
+    public double getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(double qty) {
         this.qty = qty;
     }
 }

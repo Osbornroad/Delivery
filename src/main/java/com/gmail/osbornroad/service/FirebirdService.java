@@ -2,6 +2,7 @@ package com.gmail.osbornroad.service;
 
 import com.gmail.osbornroad.model.Match224;
 import com.gmail.osbornroad.model.Note;
+import com.gmail.osbornroad.model.Shipping;
 import com.gmail.osbornroad.repository.firebird.FirebirdRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +22,12 @@ public class FirebirdService {
 
     private static final Logger logger = LoggerFactory.getLogger(FirebirdService.class);
 
-    public Integer getLastFieldKey(){
+    public Shipping getNextUnsavedShipping(int lastSavedId) {
+        return firebirdRepository.getNextUnsavedShipping(lastSavedId);
+    }
+
+
+        public Integer getLastFieldKey(){
         Integer lastFieldKey = firebirdRepository.getLastFieldKey();
 //        logger.info("getLastFieldKey() returns {}", lastFieldKey);
         return lastFieldKey;
